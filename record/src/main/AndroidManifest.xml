@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.smart.android.vrecord">
+
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application>
+        <activity
+            android:name=".camera2.RecordVideoActivity"
+            android:theme="@style/fullAppTheme" />
+        <activity android:name=".camera2.TestActivity" />
+        <activity android:name=".camera2.DemoActivity" />
+    </application>
+
+</manifest>
