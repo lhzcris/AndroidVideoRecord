@@ -123,7 +123,7 @@ public class TestActivity extends AppCompatActivity implements TextureView.Surfa
 
             mVideoSize = CameraSizeUtils.chooseVideoSize(map.getOutputSizes(MediaRecorder.class));//录制视频的支持尺寸
             mPreviewSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                    textureView.getWidth(), textureView.getHeight(), mVideoSize);//预览支持尺寸
+                    mVideoSize);//预览支持尺寸
 
             Log.d("test", "preview width=" + mPreviewSize.getWidth() +
                     ",height=" + mPreviewSize.getHeight() +

@@ -91,7 +91,7 @@ public final class CameraVideoManager implements
     // ***************SurfaceTextureListener****************** //
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-        mOpenCameraInterface.openCamera(mCameraFacing.ordinal(), width, height);
+        mOpenCameraInterface.openCamera(mCameraFacing.ordinal());
     }
 
     @Override
@@ -124,8 +124,7 @@ public final class CameraVideoManager implements
         }
         mOpenCameraInterface.startBackgroundThread();
         if (mAutoFitTextureView.isAvailable()) {
-            mOpenCameraInterface.openCamera(mCameraFacing.ordinal(),
-                    mAutoFitTextureView.getWidth(), mAutoFitTextureView.getHeight());
+            mOpenCameraInterface.openCamera(mCameraFacing.ordinal());
         } else {
             mAutoFitTextureView.setSurfaceTextureListener(this);
         }

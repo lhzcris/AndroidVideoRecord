@@ -78,12 +78,9 @@ public class RecordVideoActivity extends AppCompatActivity {
         findViewById(R.id.btn_record).setOnClickListener(v -> {
             startRecord();
         });
-
-
-//        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mTextureView.getLayoutParams();
-//        lp.height = getScreenWidth(this) * 16 / 9;
-//        mTextureView.setLayoutParams(lp);
-
+        findViewById(R.id.btn_facing).setOnClickListener(v -> {
+            mCameraVideo.switchCameraFacing();
+        });
 
         mCameraVideo = new CameraVideoManager(this);
         mCameraVideo.setAutoFitTextureView(mTextureView);

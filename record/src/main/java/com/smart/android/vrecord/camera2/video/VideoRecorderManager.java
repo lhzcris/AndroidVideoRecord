@@ -99,6 +99,7 @@ public class VideoRecorderManager {
             }
         });
 //        int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
+        Log.e("rotation", mSensorOrientation + ","+mOrientation);
         switch (mSensorOrientation) {
             case SENSOR_ORIENTATION_DEFAULT_DEGREES:
                 mMediaRecorder.setOrientationHint(DEFAULT_ORIENTATIONS.get(mOrientation));
@@ -171,7 +172,7 @@ public class VideoRecorderManager {
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("已经停止了");
         }
 

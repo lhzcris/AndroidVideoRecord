@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#000000"
     tools:context=".camera2.DemoActivity">
 
 
@@ -12,7 +13,6 @@
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:background="#000000"
         android:gravity="center"
         android:text="30:00"
         android:textColor="#fff" />
@@ -25,14 +25,22 @@
 
 
     <Button
-
         android:id="@+id/btn_record"
-        android:layout_width="match_parent"
+        android:layout_width="70dp"
         android:layout_height="44dp"
+        android:layout_centerHorizontal="true"
         android:layout_above="@+id/textureView"
         android:layout_alignParentBottom="true"
         android:layout_margin="30dp"
         android:text="录制" />
+
+    <Button
+        android:id="@+id/btn_facing"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:text="切换"
+        android:layout_alignParentRight="true"
+        android:layout_margin="30dp"/>
 
 
 </RelativeLayout>

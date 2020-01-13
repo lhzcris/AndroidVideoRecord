@@ -51,7 +51,7 @@ public class AutoFitTextureView extends TextureView {
             setMeasuredDimension(width, height);
         } else {
             //让TextureView总是达到最大边界，超出部分不进行预览（实际上还是能拍到的）。代码如下：
-            if (width> height * mRatioWidth / mRatioHeight) {
+            if (width < height * mRatioWidth / mRatioHeight) {
                 setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
             } else {
                 setMeasuredDimension(height * mRatioWidth / mRatioHeight, height);

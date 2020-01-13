@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -51,8 +52,8 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     }
 
     @SuppressLint("MissingPermission")
-    void openCamera(int cameraId, int width, int height) {
-        Log.e("textureview", width + "," + height);
+    void openCamera(int cameraId) {
+//        Log.e("textureview", width + "," + height);
         CameraManager cameraManager = (CameraManager) mContext.getApplicationContext()
                 .getSystemService(Context.CAMERA_SERVICE);
 
@@ -72,8 +73,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             }
             mSensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             mVideoSize = CameraSizeUtils.chooseVideoSize(map.getOutputSizes(MediaRecorder.class));
-            mPreviewSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                    width, height, mVideoSize);
+            mPreviewSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), mVideoSize);
 
             Log.d(TAG, "preview width=" + mPreviewSize.getWidth() +
                     ",height=" + mPreviewSize.getHeight() +
@@ -109,6 +109,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             mCameraOpenCloseLock.release();
         }
     }
+
 
 
     void startPreview() {
