@@ -208,7 +208,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     /**
      * Stops the background thread and its {@link Handler}.
      */
-    void stopBackgroundThread() {
+   public void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
         try {
             mBackgroundThread.join();

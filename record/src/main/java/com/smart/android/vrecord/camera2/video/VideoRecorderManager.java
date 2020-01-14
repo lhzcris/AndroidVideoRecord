@@ -79,7 +79,7 @@ public class VideoRecorderManager {
         mVideoSize = videoSize;
     }
 
-    private void setUpMediaRecorder() throws IOException {
+    private void setUpMediaRecorder(OpenCameraInterface openCameraInterface) throws IOException {
         mMediaRecorder = new MediaRecorder();
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
@@ -94,6 +94,7 @@ public class VideoRecorderManager {
         mMediaRecorder.setOnInfoListener((mr, what, extra) -> {
             Log.e("sss", what + "");
             if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
+                openCameraInterface.stopBackgroundThread();
                 stopRecordingVideo();
                 Log.e("sss", "完成录制");
             }
@@ -115,7 +116,7 @@ public class VideoRecorderManager {
     public void startRecordingVideo(OpenCameraInterface openCameraInterface, TextureView textureView) {
         try {
             openCameraInterface.closePreviewSession();
-            setUpMediaRecorder();
+            setUpMediaRecorder(openCameraInterface);
             SurfaceTexture texture = textureView.getSurfaceTexture();
             assert texture != null;
             texture.setDefaultBufferSize(openCameraInterface.getPreviewSize().getWidth(),
