@@ -1,4 +1,4 @@
-package com.smart.android.vrecord.camera2;
+package com.smart.android.vrecord.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -31,6 +31,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.smart.android.vrecord.R;
+import com.smart.android.vrecord.camera2.AutoFitTextureView;
+import com.smart.android.vrecord.camera2.CameraSizeUtils;
 
 import java.util.Collections;
 import java.util.concurrent.Semaphore;

@@ -7,11 +7,12 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application>
+        <activity android:name=".ui.VideoPlayActivity"></activity>
         <activity
-            android:name=".camera2.RecordVideoActivity"
+            android:name=".ui.RecordVideoActivity"
             android:theme="@style/fullAppTheme" />
-        <activity android:name=".camera2.TestActivity" />
-        <activity android:name=".camera2.DemoActivity" />
+        <activity android:name=".ui.TestActivity" />
+        <activity android:name=".ui.DemoActivity" />
     </application>
 
 </manifest>

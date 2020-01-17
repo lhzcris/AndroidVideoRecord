@@ -5,9 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.core.view.marginTop
-import com.smart.android.vrecord.camera2.RecordVideoActivity
-import com.smart.android.vrecord.camera2.TestActivity
+import com.smart.android.vrecord.ui.RecordVideoActivity
+import com.smart.android.vrecord.ui.TestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

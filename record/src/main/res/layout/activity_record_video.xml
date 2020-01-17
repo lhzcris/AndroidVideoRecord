@@ -1,46 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#000000"
-    tools:context=".camera2.DemoActivity">
+    android:orientation="vertical"
+    tools:context=".ui.DemoActivity">
 
-
-    <TextView
-        android:id="@+id/tv_title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:gravity="center"
-        android:text="30:00"
-        android:textColor="#fff" />
+        android:layout_height="match_parent">
 
-    <com.smart.android.vrecord.camera2.AutoFitTextureView
-        android:id="@+id/textureView"
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:padding="15dp"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            tools:text="00:00" />
+
+
+        <ImageView
+            android:id="@+id/iv_facing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="15dp"
+            android:src="@drawable/lv_facing" />
+
+        <com.smart.android.vrecord.camera2.AutoFitTextureView
+            android:id="@+id/textureView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tv_title" />
+
+        <Button
+            android:id="@+id/btn_suspend"
+            android:layout_width="70dp"
+            android:layout_height="44dp"
+            android:layout_above="@+id/textureView"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="30dp"
+            android:text="暂停"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_record"
+            android:layout_width="70dp"
+            android:layout_height="44dp"
+            android:layout_above="@+id/textureView"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="30dp"
+            android:src="@drawable/image_record_start" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_cover"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/tv_title" />
+        android:background="#64000000"
+        android:clickable="true"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/video_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/image_record_pause" />
+
+        <TextView
+            android:id="@+id/tv_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="重置"
+            android:textColor="#fff" />
 
 
-    <Button
-        android:id="@+id/btn_record"
-        android:layout_width="70dp"
-        android:layout_height="44dp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/textureView"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="30dp"
-        android:text="录制" />
-
-    <Button
-        android:id="@+id/btn_facing"
-        android:layout_width="80dp"
-        android:layout_height="60dp"
-        android:text="切换"
-        android:layout_alignParentRight="true"
-        android:layout_margin="30dp"/>
+        <TextView
+            android:id="@+id/tv_pick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="确定"
+            android:textColor="#fff" />
 
 
-</RelativeLayout>
+    </RelativeLayout>
+
+
+</FrameLayout>

@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Hyu on 2019-08-17.
  * Email: fvaryu@163.com
  */
-final class CameraSizeUtils {
+public final class CameraSizeUtils {
     private static final String TAG = CameraSizeUtils.class.getName();
 
     /**
@@ -21,7 +21,7 @@ final class CameraSizeUtils {
      * @param choices
      * @return
      */
-    static Size chooseVideoSize(Size[] choices) {
+   public static Size chooseVideoSize(Size[] choices) {
         for (Size size : choices) {
             Log.d(TAG, "video size width=" + size.getWidth() + ",height=" + size.getHeight());
 //            if (size.getWidth() == size.getHeight() * 4 / 3 && size.getWidth() <= 1080) {
@@ -39,7 +39,7 @@ final class CameraSizeUtils {
      * @param aspectRatio
      * @return
      */
-    static Size chooseOptimalSize(Size[] choices,Size aspectRatio) {
+   public static Size chooseOptimalSize(Size[] choices,Size aspectRatio) {
         List<Size> bigEnough = new ArrayList<>();
         int w = aspectRatio.getWidth();
         int h = aspectRatio.getHeight();

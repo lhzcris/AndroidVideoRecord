@@ -14,13 +14,27 @@ public interface CameraVideo {
 
     void onResume();
 
+    void startPreview();
+
     void startRecordingVideo(String videoPath);
 
     void stopRecordingVideo();
+
+    //暂停录制
+    void pauseRecordVideo();
+
+    //继续录制
+    void resumeRecordVideo();
+
+    void setOnRecordFinishListener(OnRecordFinishListener onRecordFinishListener);
 
     void setOnProgressChangeListener(OnProgressChangeListener onProgressChangeListener);
 
     interface OnProgressChangeListener {
         void onProgressChanged(int duration);
+    }
+
+    interface OnRecordFinishListener {
+        void onRecordFinished();
     }
 }

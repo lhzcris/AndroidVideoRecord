@@ -1,4 +1,4 @@
-package com.smart.android.vrecord.camera2
+package com.smart.android.vrecord.ui
 
 import android.annotation.SuppressLint
 import android.content.Context

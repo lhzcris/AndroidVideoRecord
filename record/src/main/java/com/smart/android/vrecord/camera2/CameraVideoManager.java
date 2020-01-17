@@ -22,6 +22,7 @@ public final class CameraVideoManager implements
     private static final int DONE = 102;
     private static final int START = 100;
     private static final int TIMER = 101;
+
     private AlbumOrientationEventListener mAlbumOrientationEventListener;
 
     private Context mContext;
@@ -29,6 +30,7 @@ public final class CameraVideoManager implements
     private OpenCameraInterface mOpenCameraInterface;
     private VideoRecorderManager mVideoRecorderManager;
     private OnProgressChangeListener mOnProgressChangeListener;
+    private OnRecordFinishListener mOnRecordFinishListener;
 
     private CameraFacing mCameraFacing = CameraFacing.BACK;
     private Handler mHandler;
@@ -88,6 +90,12 @@ public final class CameraVideoManager implements
         this.mAutoFitTextureView = textureView;
     }
 
+
+    @Override
+    public void setOnRecordFinishListener(OnRecordFinishListener onRecordFinishListener) {
+        this.mOnRecordFinishListener = onRecordFinishListener;
+    }
+
     // ***************SurfaceTextureListener****************** //
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
@@ -115,6 +123,8 @@ public final class CameraVideoManager implements
         stopRecordingVideo();
         mOpenCameraInterface.stopBackgroundThread();
         mAlbumOrientationEventListener.disable();
+        if (mHandler != null)
+            mHandler.removeMessages(TIMER);
     }
 
     @Override
@@ -131,6 +141,23 @@ public final class CameraVideoManager implements
     }
 
     @Override
+    public void pauseRecordVideo() {
+        if (mVideoRecorderManager != null)
+            mVideoRecorderManager.pause();
+        if (mHandler != null) {
+            mHandler.removeMessages(TIMER);
+        }
+    }
+
+    @Override
+    public void resumeRecordVideo() {
+        if (mVideoRecorderManager != null)
+            mVideoRecorderManager.resume();
+        if (mHandler != null)
+            mHandler.sendEmptyMessage(START);
+    }
+
+    @Override
     public void startRecordingVideo(String videoPath) {
         if (mVideoRecorderManager == null) {
             mVideoRecorderManager = new VideoRecorderManager((Activity) mContext);
@@ -140,16 +167,25 @@ public final class CameraVideoManager implements
         mVideoRecorderManager.setVideoSize(mOpenCameraInterface.getVideoSize());
         mVideoRecorderManager.setSensorOrientation(mOpenCameraInterface.getSensorOrientation());
         mVideoRecorderManager.startRecordingVideo(mOpenCameraInterface, mAutoFitTextureView);
+        mVideoRecorderManager.setRecordInfoListener(() -> {
+            if (mOnRecordFinishListener != null)
+                mOnRecordFinishListener.onRecordFinished();
+        });
         if (mHandler != null)
             mHandler.sendEmptyMessage(START);
     }
 
     @Override
+    public void startPreview() {
+        if (mOpenCameraInterface != null)
+            mOpenCameraInterface.startPreview();
+    }
+
+    @Override
     public void stopRecordingVideo() {
         if (mVideoRecorderManager != null) {
+//            mOpenCameraInterface.startPreview();
             mVideoRecorderManager.stopRecordingVideo();
-            mOpenCameraInterface.startPreview();
-
             if (mHandler != null) {
                 mHandler.removeMessages(TIMER);
                 mHandler.sendEmptyMessage(DONE);

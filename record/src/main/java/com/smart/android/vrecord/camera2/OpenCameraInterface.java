@@ -65,7 +65,6 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
                     Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-//            String cameraId = cameraManager.getCameraIdList()[0];
             CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(String.valueOf(cameraId));
             StreamConfigurationMap map = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             if (map == null) {
@@ -109,7 +108,6 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             mCameraOpenCloseLock.release();
         }
     }
-
 
 
     void startPreview() {
@@ -208,7 +206,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     /**
      * Stops the background thread and its {@link Handler}.
      */
-   public void stopBackgroundThread() {
+    public void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
         try {
             mBackgroundThread.join();

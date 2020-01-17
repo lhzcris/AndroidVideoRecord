@@ -1,5 +1,6 @@
 package com.smart.android.vrecord.camera2.video;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 
+import com.smart.android.vrecord.camera2.OnRecordInfoListener;
 import com.smart.android.vrecord.camera2.OpenCameraInterface;
 
 import java.io.IOException;
@@ -59,6 +61,8 @@ public class VideoRecorderManager {
     private CaptureRequest.Builder mPreviewBuilder;
     private int mOrientation;
 
+    private OnRecordInfoListener recordInfoListener;
+
     public VideoRecorderManager(Activity activity) {
         mActivity = activity;
     }
@@ -75,9 +79,16 @@ public class VideoRecorderManager {
         mOrientation = orientation;
     }
 
+    public void setRecordInfoListener(OnRecordInfoListener recordInfoListener) {
+        this.recordInfoListener = recordInfoListener;
+    }
+
     public void setVideoSize(Size videoSize) {
         mVideoSize = videoSize;
     }
+
+
+
 
     private void setUpMediaRecorder(OpenCameraInterface openCameraInterface) throws IOException {
         mMediaRecorder = new MediaRecorder();
@@ -94,13 +105,17 @@ public class VideoRecorderManager {
         mMediaRecorder.setOnInfoListener((mr, what, extra) -> {
             Log.e("sss", what + "");
             if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-                openCameraInterface.stopBackgroundThread();
-                stopRecordingVideo();
                 Log.e("sss", "完成录制");
+//                openCameraInterface.stopBackgroundThread();
+//                stopRecordingVideo();
+                if (recordInfoListener != null) {
+                    recordInfoListener.onFinishRecord();
+                }
+
             }
         });
 //        int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
-        Log.e("rotation", mSensorOrientation + ","+mOrientation);
+        Log.e("rotation", mSensorOrientation + "," + mOrientation);
         switch (mSensorOrientation) {
             case SENSOR_ORIENTATION_DEFAULT_DEGREES:
                 mMediaRecorder.setOrientationHint(DEFAULT_ORIENTATIONS.get(mOrientation));
@@ -160,6 +175,20 @@ public class VideoRecorderManager {
             e.printStackTrace();
         }
 
+    }
+
+    @SuppressLint("NewApi")
+    public void pause(){
+        if (mMediaRecorder!=null) {
+            mMediaRecorder.pause();
+        }
+    }
+
+    @SuppressLint("NewApi")
+    public void resume(){
+        if (mMediaRecorder!=null){
+            mMediaRecorder.resume();
+        }
     }
 
 
