@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.smart.android.vrecord.R;
+import com.smart.android.vrecord.VideoRecordPicker;
 import com.smart.android.vrecord.camera2.AutoFitTextureView;
 import com.smart.android.vrecord.camera2.CameraSizeUtils;
 
@@ -68,6 +69,8 @@ public class TestActivity extends AppCompatActivity implements TextureView.Surfa
         setContentView(R.layout.activity_test2);
 
         init();
+
+
     }
 
 

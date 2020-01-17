@@ -7,9 +7,13 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application>
-        <activity android:name=".ui.VideoPlayActivity"></activity>
+        <activity
+            android:name=".ui.VideoPlayActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/fullAppTheme" />
         <activity
             android:name=".ui.RecordVideoActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/fullAppTheme" />
         <activity android:name=".ui.TestActivity" />
         <activity android:name=".ui.DemoActivity" />

@@ -1,6 +1,5 @@
 package com.smart.android.vrecord.camera2.video;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -8,16 +7,16 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CaptureRequest;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-
+import com.smart.android.vrecord.VideoRecordPicker;
 import com.smart.android.vrecord.camera2.OnRecordInfoListener;
 import com.smart.android.vrecord.camera2.OpenCameraInterface;
 
@@ -28,12 +27,13 @@ import java.util.List;
 
 public class VideoRecorderManager {
 
+//    private static final int MAX_COUNT = 30 * 1000;
+
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
     private static final SparseIntArray INVERSE_ORIENTATIONS = new SparseIntArray();
 
-    private static final int MAX_COUNT = 11 * 1000;
 
     static {
         DEFAULT_ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -88,8 +88,6 @@ public class VideoRecorderManager {
     }
 
 
-
-
     private void setUpMediaRecorder(OpenCameraInterface openCameraInterface) throws IOException {
         mMediaRecorder = new MediaRecorder();
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -101,19 +99,19 @@ public class VideoRecorderManager {
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mMediaRecorder.setMaxDuration(MAX_COUNT);//录制最大时长 ms
-        mMediaRecorder.setOnInfoListener((mr, what, extra) -> {
-            Log.e("sss", what + "");
-            if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-                Log.e("sss", "完成录制");
-//                openCameraInterface.stopBackgroundThread();
-//                stopRecordingVideo();
-                if (recordInfoListener != null) {
-                    recordInfoListener.onFinishRecord();
-                }
+        if (VideoRecordPicker.getInstance().getMaxDuration() > 1000) {
+            mMediaRecorder.setMaxDuration((int) VideoRecordPicker.getInstance().getMaxDuration());//录制最大时长 ms
+            mMediaRecorder.setOnInfoListener((mr, what, extra) -> {
+                Log.e("sss", what + "");
+                if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
+                    Log.e("sss", "完成录制");
+                    if (recordInfoListener != null) {
+                        recordInfoListener.onFinishRecord();
+                    }
 
-            }
-        });
+                }
+            });
+        }
 //        int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
         Log.e("rotation", mSensorOrientation + "," + mOrientation);
         switch (mSensorOrientation) {
@@ -177,17 +175,19 @@ public class VideoRecorderManager {
 
     }
 
-    @SuppressLint("NewApi")
-    public void pause(){
-        if (mMediaRecorder!=null) {
-            mMediaRecorder.pause();
+    public void pause() {
+        if (mMediaRecorder != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                mMediaRecorder.pause();
+            }
         }
     }
 
-    @SuppressLint("NewApi")
-    public void resume(){
-        if (mMediaRecorder!=null){
-            mMediaRecorder.resume();
+    public void resume() {
+        if (mMediaRecorder != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                mMediaRecorder.resume();
+            }
         }
     }
 

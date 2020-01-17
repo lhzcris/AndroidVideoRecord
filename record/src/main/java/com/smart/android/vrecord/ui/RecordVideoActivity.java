@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.smart.android.vrecord.R;
+import com.smart.android.vrecord.VideoRecordPicker;
 import com.smart.android.vrecord.camera2.AutoFitTextureView;
 import com.smart.android.vrecord.camera2.CameraVideo;
 import com.smart.android.vrecord.camera2.CameraVideoManager;
@@ -75,6 +77,11 @@ public class RecordVideoActivity extends AppCompatActivity {
      */
     private boolean is2Pause;
 
+    /**
+     * 是否有暂停能力
+     */
+    private boolean canSuspend;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +101,10 @@ public class RecordVideoActivity extends AppCompatActivity {
         mTextureView = findViewById(R.id.textureView);
         btnSuspend = findViewById(R.id.btn_suspend);
         ivFacing = findViewById(R.id.iv_facing);
+        canSuspend = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
         btnSuspend.setOnClickListener(v -> {
+            if (!canSuspend)
+                return;
             if (isSuspend) {
                 mCameraVideo.resumeRecordVideo();
                 btnSuspend.setText("暂停");
@@ -108,7 +118,6 @@ public class RecordVideoActivity extends AppCompatActivity {
             if (isRecording) {
                 Log.e("sss", "录制完成");
                 stopRecord();
-
             } else {
                 startRecord();
             }
@@ -117,7 +126,12 @@ public class RecordVideoActivity extends AppCompatActivity {
             mCameraVideo.switchCameraFacing();
         });
         findViewById(R.id.tv_cancle).setOnClickListener(v -> reStartPreview());
-//        findViewById(R.id.tv_pick).setOnClickListener();
+        findViewById(R.id.tv_pick).setOnClickListener(v -> {
+            if (VideoRecordPicker.getInstance().getFinishListener() != null) {
+                VideoRecordPicker.getInstance().getFinishListener().onFinishListener(mVideoPath);
+            }
+            finish();
+        });
         findViewById(R.id.video_play).setOnClickListener(v -> {
             is2Pause = true;
             VideoPlayActivity.start(RecordVideoActivity.this, mVideoPath);
@@ -174,7 +188,8 @@ public class RecordVideoActivity extends AppCompatActivity {
     private void startRecord() {
         isRecording = true;
         ivRecord.setImageResource(R.drawable.image_record_pause);
-        btnSuspend.setVisibility(View.VISIBLE);
+        if (canSuspend)
+            btnSuspend.setVisibility(View.VISIBLE);
         ivFacing.setVisibility(View.GONE);
         llCover.setVisibility(View.GONE);
         mVideoPath = getVideoFilePath(RecordVideoActivity.this);
@@ -200,7 +215,8 @@ public class RecordVideoActivity extends AppCompatActivity {
         ivRecord.setImageResource(R.drawable.image_record_start);
         mTitleView.setText("");
         mTitleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        btnSuspend.setVisibility(View.GONE);
+        if (canSuspend)
+            btnSuspend.setVisibility(View.GONE);
         ivFacing.setVisibility(View.VISIBLE);
         llCover.setVisibility(View.GONE);
         if (mAnimator != null) {
