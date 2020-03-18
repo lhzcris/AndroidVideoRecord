@@ -73,6 +73,8 @@ public final class CameraVideoManager implements
 
     @Override
     public void switchCameraFacing() {
+        if (mOpenCameraInterface.isClose())
+            return;
         if (mCameraFacing == CameraFacing.BACK) {
             mCameraFacing = CameraFacing.FRONT;
         } else {

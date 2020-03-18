@@ -1,9 +1,14 @@
 package com.smart.android.vrecord.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smart.android.vrecord.R;
 import com.smart.android.vrecord.VideoRecordPicker;
@@ -82,6 +88,9 @@ public class RecordVideoActivity extends AppCompatActivity {
      */
     private boolean canSuspend;
 
+    /**权限*/
+    private boolean isPermission;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,9 +110,10 @@ public class RecordVideoActivity extends AppCompatActivity {
         mTextureView = findViewById(R.id.textureView);
         btnSuspend = findViewById(R.id.btn_suspend);
         ivFacing = findViewById(R.id.iv_facing);
+        /**暂停录制只有在24以上才生效*/
         canSuspend = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
         btnSuspend.setOnClickListener(v -> {
-            if (!canSuspend)
+            if (!canSuspend||!isPermission)
                 return;
             if (isSuspend) {
                 mCameraVideo.resumeRecordVideo();
@@ -115,14 +125,15 @@ public class RecordVideoActivity extends AppCompatActivity {
             isSuspend = !isSuspend;
         });
         ivRecord.setOnClickListener(v -> {
+            if (!isPermission) return;
             if (isRecording) {
-                Log.e("sss", "录制完成");
                 stopRecord();
             } else {
                 startRecord();
             }
         });
         ivFacing.setOnClickListener(v -> {
+            if (!isPermission)return;
             mCameraVideo.switchCameraFacing();
         });
         findViewById(R.id.tv_cancle).setOnClickListener(v -> reStartPreview());
@@ -137,7 +148,11 @@ public class RecordVideoActivity extends AppCompatActivity {
             VideoPlayActivity.start(RecordVideoActivity.this, mVideoPath);
         });
 
+        askPermissions();
+    }
 
+
+    private void initCamera() {
         mCameraVideo = new CameraVideoManager(this);
         mCameraVideo.setAutoFitTextureView(mTextureView);
         mCameraVideo.setOnRecordFinishListener(() -> stopRecord());
@@ -154,22 +169,25 @@ public class RecordVideoActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!is2Pause) {
-            mCameraVideo.onResume();
-            if (mAnimator != null) {
-                mAnimator.resume();
+        if (isPermission) {
+            if (!is2Pause) {
+                mCameraVideo.onResume();
+                if (mAnimator != null) {
+                    mAnimator.resume();
+                }
             }
+            is2Pause = false;
         }
-        is2Pause = false;
-
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (!is2Pause) {
-            mCameraVideo.onPause();
-            rest();
+        if (isPermission) {
+            if (!is2Pause) {
+                mCameraVideo.onPause();
+                rest();
+            }
         }
     }
 
@@ -187,7 +205,7 @@ public class RecordVideoActivity extends AppCompatActivity {
 
     private void startRecord() {
         isRecording = true;
-        ivRecord.setImageResource(R.drawable.image_record_pause);
+        ivRecord.setImageResource(R.drawable.vr_image_pause);
         if (canSuspend)
             btnSuspend.setVisibility(View.VISIBLE);
         ivFacing.setVisibility(View.GONE);
@@ -196,7 +214,7 @@ public class RecordVideoActivity extends AppCompatActivity {
         Log.e("path", mVideoPath);
         mCameraVideo.startRecordingVideo(mVideoPath);
         mTitleView.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.lv_timer_dot, 0, 0, 0);
+                R.drawable.vr_drawable_timer_dot, 0, 0, 0);
         if (mAnimator == null) {
             mAnimator = ObjectAnimator.ofFloat(mTitleView, "alpha",
                     1, 0.4f, 1)
@@ -212,7 +230,7 @@ public class RecordVideoActivity extends AppCompatActivity {
     private void rest() {
         isRecording = false;
         isSuspend = false;
-        ivRecord.setImageResource(R.drawable.image_record_start);
+        ivRecord.setImageResource(R.drawable.vr_image_start);
         mTitleView.setText("");
         mTitleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         if (canSuspend)
@@ -230,6 +248,46 @@ public class RecordVideoActivity extends AppCompatActivity {
             dir.mkdirs();
         }
         return (dir.getAbsolutePath() + "/") + System.currentTimeMillis() + ".mp4";
+    }
+
+
+    private void askPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (hasPermission(Manifest.permission.CAMERA) && hasPermission(Manifest.permission.RECORD_AUDIO)) {
+                isPermission = true;
+                initCamera();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, 1);
+                isPermission = false;
+            }
+        } else {
+            isPermission = true;
+            initCamera();
+        }
+    }
+
+    private boolean hasPermission(String permission) {
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length == 2 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    //执行代码,这里是已经申请权限成功了,可以不用做处理
+                    isPermission = true;
+                    initCamera();
+                } else {
+                    isPermission = false;
+                    Toast.makeText(this, "权限申请失败", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 
 }

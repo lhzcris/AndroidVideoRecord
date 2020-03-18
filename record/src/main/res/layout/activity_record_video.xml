@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:padding="15dp"
-            android:src="@drawable/lv_facing" />
+            android:src="@drawable/vr_image_facing" />
 
         <com.smart.android.vrecord.camera2.AutoFitTextureView
             android:id="@+id/textureView"
@@ -42,24 +42,27 @@
 
         <Button
             android:id="@+id/btn_suspend"
-            android:layout_width="70dp"
-            android:layout_height="44dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_above="@+id/textureView"
             android:layout_alignParentBottom="true"
+            android:background="@drawable/vr_drawable_pause_bg"
             android:layout_margin="30dp"
             android:text="暂停"
+            android:textColor="#ffffff"
             android:visibility="gone"
+            android:textSize="12sp"
             tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/iv_record"
-            android:layout_width="70dp"
-            android:layout_height="44dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/textureView"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_margin="30dp"
-            android:src="@drawable/image_record_start" />
+            android:src="@drawable/vr_image_start" />
 
     </RelativeLayout>
 
@@ -74,10 +77,10 @@
 
         <ImageView
             android:id="@+id/video_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/image_record_pause" />
+            android:src="@drawable/vr_image_play" />
 
         <TextView
             android:id="@+id/tv_cancle"
@@ -88,6 +91,7 @@
             android:gravity="center"
             android:padding="15dp"
             android:text="重置"
+            android:textSize="16sp"
             android:textColor="#fff" />
 
 
@@ -100,6 +104,7 @@
             android:layout_marginBottom="30dp"
             android:gravity="center"
             android:padding="15dp"
+            android:textSize="16sp"
             android:text="确定"
             android:textColor="#fff" />
 

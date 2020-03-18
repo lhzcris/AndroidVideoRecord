@@ -37,9 +37,6 @@ public class VideoPlayActivity extends AppCompatActivity {
 
         mVideoView = findViewById(R.id.video_view);
         initVideo(getIntent().getStringExtra("video_path"));
-
-
-
     }
 
 

@@ -85,6 +85,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             } else {
                 mTextureView.setAspectRatio(mPreviewSize.getHeight(), mPreviewSize.getWidth());
             }
+            //handler 确定Callback在哪个线程执行，为null的话就在当前线程执行
             cameraManager.openCamera(String.valueOf(cameraId), this, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -93,6 +94,9 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
         }
     }
 
+    public boolean isClose() {
+        return mCameraDevice == null;
+    }
 
     void closeCamera() {
         try {
@@ -118,9 +122,10 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             closePreviewSession();
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             assert texture != null;
+            //设置TextureView的缓冲区大小
             texture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
             mPreviewBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-
+            //获取Surface显示预览数据
             Surface previewSurface = new Surface(texture);
             mPreviewBuilder.addTarget(previewSurface);
 
@@ -138,6 +143,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
 
                         }
                     }, mBackgroundHandler);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -152,6 +158,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             HandlerThread thread = new HandlerThread("CameraPreview");
             thread.start();
             mPreviewSession.setRepeatingRequest(mPreviewBuilder.build(), null, mBackgroundHandler);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -233,6 +240,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
         mCameraOpenCloseLock.release();
         cameraDevice.close();
         mCameraDevice = null;
+
     }
 
     @Override

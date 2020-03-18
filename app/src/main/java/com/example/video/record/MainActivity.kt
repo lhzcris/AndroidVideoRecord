@@ -12,6 +12,7 @@ import com.smart.android.vrecord.VideoRecordPicker
 import com.smart.android.vrecord.ui.RecordVideoActivity
 import com.smart.android.vrecord.ui.TestActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +27,17 @@ class MainActivity : AppCompatActivity() {
 
         VideoRecordPicker.getInstance().setFinishListener { videoPath ->
 
-            text.text = videoPath
+            val file = File(videoPath)
+            if (file.exists()) {
+                val sbuilder = StringBuilder()
+                sbuilder.append("地址：$videoPath")
+                sbuilder.append("\n")
+                sbuilder.append("文件名：${file.name}")
+                sbuilder.append("\n")
+
+
+                text.text = sbuilder.toString()
+            }
 
             video_view?.let {
                 video_view.stopPlayback()
@@ -35,12 +46,11 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-
         video_view.setMediaController(MediaController(this))
 
         addView("录像", RecordVideoActivity::class.java)
 
-        addView("拍照", TestActivity::class.java)
+//        addView("拍照", TestActivity::class.java)
     }
 
     fun addView(name: String, clazz: Class<*>) {

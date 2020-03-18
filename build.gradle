@@ -17,6 +17,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url = ANDROID_REPOSITORY_URL }
         google()
         jcenter()
 

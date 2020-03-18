@@ -1,5 +1,10 @@
 package com.smart.android.vrecord;
 
+import android.content.Context;
+import android.content.Intent;
+
+import com.smart.android.vrecord.ui.RecordVideoActivity;
+
 import java.io.Serializable;
 
 /**
@@ -14,6 +19,7 @@ public class VideoRecordPicker {
 
     private RecordBuilder recordBuilder;
 
+
     public static VideoRecordPicker getInstance() {
         if (mInstance == null) {
             synchronized (VideoRecordPicker.class) {
@@ -23,6 +29,11 @@ public class VideoRecordPicker {
             }
         }
         return mInstance;
+    }
+
+
+    public static void startRecord(Context context) {
+        context.startActivity(new Intent(context, RecordVideoActivity.class));
     }
 
     public void clearAll() {
@@ -62,7 +73,7 @@ public class VideoRecordPicker {
             return maxDuration;
         }
 
-        public RecordBuilder setMaxDuration(long maxDuration) {
+        public RecordBuilder setMaxDuration(/*ms 毫米啊*/long maxDuration) {
             this.maxDuration = maxDuration;
             return this;
         }
