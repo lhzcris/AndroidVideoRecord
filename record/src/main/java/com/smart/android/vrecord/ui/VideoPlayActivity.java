@@ -1,10 +1,7 @@
 package com.smart.android.vrecord.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Window;
@@ -12,11 +9,9 @@ import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-import com.smart.android.vrecord.OnRecordFinishListener;
 import com.smart.android.vrecord.R;
-import com.smart.android.vrecord.VideoRecordPicker;
 
-public class VideoPlayActivity extends AppCompatActivity {
+public class VideoPlayActivity extends CBaseActivity {
 
     private VideoView mVideoView;
 

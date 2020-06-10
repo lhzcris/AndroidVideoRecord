@@ -9,6 +9,7 @@ import android.widget.MediaController
 import android.widget.Toast
 import com.smart.android.vrecord.OnRecordFinishListener
 import com.smart.android.vrecord.VideoRecordPicker
+import com.smart.android.vrecord.ui.CameraXPreviewActivity
 import com.smart.android.vrecord.ui.RecordVideoActivity
 import com.smart.android.vrecord.ui.TestActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -51,12 +52,14 @@ class MainActivity : AppCompatActivity() {
         addView("录像", RecordVideoActivity::class.java)
 
 //        addView("拍照", TestActivity::class.java)
+
+        addView("cameraX", CameraXPreviewActivity::class.java)
     }
 
     fun addView(name: String, clazz: Class<*>) {
         var button = Button(this)
         button.text = name
-        button.setOnClickListener({ startActivity(Intent(this, clazz)) })
+        button.setOnClickListener { startActivity(Intent(this, clazz)) }
         button.setPadding(0, 40, 0, 0)
         var lp = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200)
         button.layoutParams = lp

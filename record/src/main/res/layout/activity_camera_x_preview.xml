@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical"
+    tools:context=".ui.DemoActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:padding="15dp"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            tools:text="00:00" />
+
+
+        <ImageView
+            android:id="@+id/iv_facing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:padding="15dp"
+            android:src="@drawable/vr_image_facing" />
+
+<!--        <com.smart.android.vrecord.camera2.AutoFitTextureView-->
+<!--            android:id="@+id/textureView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_below="@+id/tv_title" />-->
+        <FrameLayout
+            android:id="@+id/fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tv_title" />
+
+        <Button
+            android:id="@+id/btn_suspend"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_above="@+id/fragment"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/vr_drawable_pause_bg"
+            android:layout_margin="30dp"
+            android:text="暂停"
+            android:textColor="#ffffff"
+            android:visibility="gone"
+            android:textSize="12sp"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/fragment"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="30dp"
+            android:src="@drawable/vr_image_start" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#64000000"
+        android:clickable="true"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/video_play"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/vr_image_play" />
+
+        <TextView
+            android:id="@+id/tv_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="重置"
+            android:textSize="16sp"
+            android:textColor="#fff" />
+
+
+        <TextView
+            android:id="@+id/tv_pick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:padding="15dp"
+            android:textSize="16sp"
+            android:text="确定"
+            android:textColor="#fff" />
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>

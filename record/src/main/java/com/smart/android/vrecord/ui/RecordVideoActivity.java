@@ -1,10 +1,5 @@
 package com.smart.android.vrecord.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -22,6 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.smart.android.vrecord.R;
 import com.smart.android.vrecord.VideoRecordPicker;
 import com.smart.android.vrecord.camera2.AutoFitTextureView;
@@ -31,7 +30,7 @@ import com.smart.android.vrecord.camera2.CameraVideoManager;
 import java.io.File;
 import java.util.Locale;
 
-public class RecordVideoActivity extends AppCompatActivity {
+public class RecordVideoActivity extends CBaseActivity {
 
     private static final String TAG = "camera";
 
