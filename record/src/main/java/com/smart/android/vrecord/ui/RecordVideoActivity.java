@@ -90,14 +90,14 @@ public class RecordVideoActivity extends CBaseActivity {
     /**权限*/
     private boolean isPermission;
 
+    @Override
+    protected int layout() {
+        return R.layout.activity_record_video;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);// 去掉标题栏
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
-        setContentView(R.layout.activity_record_video);
         initUI();
     }
 

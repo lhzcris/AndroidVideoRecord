@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application>
-        <activity android:name=".ui.CameraXPreviewActivity"></activity>
+        <activity android:name=".ui.TakeVideoActivity"></activity>
+        <activity android:name=".ui.TakePictureActivity" />
         <activity
             android:name=".ui.VideoPlayActivity"
             android:screenOrientation="portrait"

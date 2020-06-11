@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
@@ -70,6 +71,8 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             if (map == null) {
                 return;
             }
+//            map.getOutputSizes(ImageFormat.JPEG);
+
             mSensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             mVideoSize = CameraSizeUtils.chooseVideoSize(map.getOutputSizes(MediaRecorder.class));
             mPreviewSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), mVideoSize);
@@ -264,6 +267,10 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
 
     public void setCameraDevice(CameraDevice cameraDevice) {
         mCameraDevice = cameraDevice;
+    }
+
+    public CameraCaptureSession getmPreviewSession() {
+        return mPreviewSession;
     }
 
     public AutoFitTextureView getTextureView() {

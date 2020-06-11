@@ -6,12 +6,9 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.MediaController
-import android.widget.Toast
-import com.smart.android.vrecord.OnRecordFinishListener
 import com.smart.android.vrecord.VideoRecordPicker
-import com.smart.android.vrecord.ui.CameraXPreviewActivity
+import com.smart.android.vrecord.ui.TakePictureActivity
 import com.smart.android.vrecord.ui.RecordVideoActivity
-import com.smart.android.vrecord.ui.TestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
@@ -53,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
 //        addView("拍照", TestActivity::class.java)
 
-        addView("cameraX", CameraXPreviewActivity::class.java)
+        addView("cameraX", TakePictureActivity::class.java)
     }
 
     fun addView(name: String, clazz: Class<*>) {
