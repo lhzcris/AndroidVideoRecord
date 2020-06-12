@@ -36,7 +36,7 @@ class TakePictureActivity : CBaseActivity(), PreViewOnChanagerListener {
         })
 
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragment, fragment!!, "cx").commitNow()
+            .replace(R.id.fragment, fragment!!, "cx").commit()
 
 
         tv_take.setOnClickListener {

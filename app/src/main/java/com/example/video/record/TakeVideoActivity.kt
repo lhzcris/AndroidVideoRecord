@@ -61,7 +61,7 @@ class TakeVideoActivity : CBaseActivity(), PreViewOnChanagerListener {
                 ToastUtils.showShort("file==$filePath")
             }
         })
-        supportFragmentManager.beginTransaction().add(R.id.fragment1, fragment!!, "take_vidoe")
+        supportFragmentManager.beginTransaction().replace(R.id.fragment1, fragment!!, "take_vidoe")
             .commitNow()
 
         btn_suspend.setOnClickListener {
