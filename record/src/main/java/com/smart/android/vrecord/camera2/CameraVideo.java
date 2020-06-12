@@ -1,5 +1,7 @@
 package com.smart.android.vrecord.camera2;
 
+import com.smart.android.vrecord.camera2.listener.OnCameraResultListener;
+
 /**
  * Created by Hyu on 2019-08-17.
  * Email: fvaryu@163.com
@@ -26,7 +28,11 @@ public interface CameraVideo {
     //继续录制
     void resumeRecordVideo();
 
-    void setOnRecordFinishListener(OnRecordFinishListener onRecordFinishListener);
+    void takePicture(String picPath);
+
+//    void setOnRecordFinishListener(OnRecordFinishListener onRecordFinishListener);
+
+    void setOnCameraResultListener(OnCameraResultListener resultListener);
 
     void setOnProgressChangeListener(OnProgressChangeListener onProgressChangeListener);
 

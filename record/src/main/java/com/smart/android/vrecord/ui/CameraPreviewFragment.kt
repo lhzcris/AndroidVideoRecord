@@ -1,6 +1,7 @@
 package com.smart.android.vrecord.ui
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -13,7 +14,9 @@ import androidx.fragment.app.Fragment
 import com.smart.android.vrecord.R
 import com.smart.android.vrecord.camera2.CameraVideo
 import com.smart.android.vrecord.camera2.CameraVideoManager
+import com.smart.android.vrecord.camera2.listener.OnCameraResultListener
 import kotlinx.android.synthetic.main.cx_fragment_camera_preview.*
+import java.io.File
 
 /**
  * @author liuhuazhong
@@ -47,10 +50,27 @@ class CameraPreviewFragment : Fragment() {
 
     private var preViewOnChanagerListener: PreViewOnChanagerListener? = null
 
+    private var resultListener: OnCameraResultListener? = null
+
+    private var outPath: String? = null
+
+    fun isHasPermission() = isPermission
+
+    fun getOutPath() = outPath
+
+    fun setIs2Pause(pause: Boolean) {
+        is2Pause = pause
+    }
 
     fun setPreViewOnChanagerListener(listener: PreViewOnChanagerListener?) {
         this.preViewOnChanagerListener = listener
     }
+
+
+    fun setOnCameraResultListener(resultListener: OnCameraResultListener) {
+        this.resultListener = resultListener
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +87,7 @@ class CameraPreviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         askPermissions()
+//        VideoRecordPicker.getInstance().finishListener?.onFinishListener(outPath)
     }
 
 
@@ -100,10 +121,10 @@ class CameraPreviewFragment : Fragment() {
         mCameraVideo = CameraVideoManager(context)
         mCameraVideo?.apply {
             setAutoFitTextureView(textureView)
-            setOnRecordFinishListener {
-                //            stopRecord()
-            }
+            if (resultListener != null)
+                setOnCameraResultListener(resultListener)
             setOnProgressChangeListener { duration: Int ->
+                preViewOnChanagerListener?.progressChangeListener(duration)
                 //            mCurrentDuration = duration
 //            val minute = duration / 60
 //            val second = duration % 60
@@ -118,14 +139,58 @@ class CameraPreviewFragment : Fragment() {
 
     }
 
-    fun startPreview(){
+    fun startPreview() {
         mCameraVideo?.startPreview()
     }
 
-    fun startRecord(){
-
+    //切换摄像头
+    fun switchCameraFacing() {
+        mCameraVideo?.switchCameraFacing()
     }
 
+    /**拍摄视频*/
+    fun startRecord() {
+        outPath = getVideoFilePath(activity!!)
+        mCameraVideo?.startRecordingVideo(outPath)
+    }
+
+    //继续录制视频
+    fun resumeRecordVideo() {
+        mCameraVideo?.resumeRecordVideo()
+    }
+
+    //暂停录制视频
+    fun pauseRecordVideo() {
+        mCameraVideo?.pauseRecordVideo()
+    }
+
+    fun stopRecord() {
+        mCameraVideo?.stopRecordingVideo()
+    }
+
+
+    /**拍照*/
+    fun takePicture() {
+        outPath = getPicFilePath(activity!!)
+        mCameraVideo?.takePicture(outPath)
+    }
+
+
+    private fun getPicFilePath(context: Context): String? {
+        val dir = File(context.getExternalFilesDir(null), "Photo")
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        return dir.absolutePath + "/" + System.currentTimeMillis() + ".jpeg"
+    }
+
+    private fun getVideoFilePath(context: Context): String? {
+        val dir = File(context.getExternalFilesDir(null), "Videos")
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        return dir.absolutePath + "/" + System.currentTimeMillis() + ".mp4"
+    }
 
     private fun askPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

@@ -1,4 +1,4 @@
-package com.smart.android.vrecord.camera2;
+package com.smart.android.vrecord.camera2.listener;
 
 /**
  * @author liuhuazhong

@@ -19,6 +19,7 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.ImageReader;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -29,6 +30,10 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.smart.android.utils.Logger;
+import com.smart.android.vrecord.camera2.image.ImageReaderManager;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +45,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     private Integer mSensorOrientation;
     private Size mVideoSize;
     private Size mPreviewSize;
+    private Size mPicSize;
     private CameraDevice mCameraDevice;
     private AutoFitTextureView mTextureView;
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
@@ -48,13 +54,15 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     private CameraCaptureSession mPreviewSession;
     private CaptureRequest.Builder mPreviewBuilder;
 
+    private ImageReader imageReader;
+
     OpenCameraInterface(Activity context) {
         mContext = context;
     }
 
     @SuppressLint("MissingPermission")
-    void openCamera(int cameraId) {
-//        Log.e("textureview", width + "," + height);
+    void openCamera(int cameraId, ImageReaderManager imageReaderManager) {
+
         CameraManager cameraManager = (CameraManager) mContext.getApplicationContext()
                 .getSystemService(Context.CAMERA_SERVICE);
 
@@ -71,13 +79,18 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             if (map == null) {
                 return;
             }
-//            map.getOutputSizes(ImageFormat.JPEG);
 
             mSensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             mVideoSize = CameraSizeUtils.chooseVideoSize(map.getOutputSizes(MediaRecorder.class));
             mPreviewSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), mVideoSize);
+//            mPicSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(ImageFormat.JPEG));
 
-            Log.d(TAG, "preview width=" + mPreviewSize.getWidth() +
+            if (imageReaderManager != null) {
+                imageReaderManager.setupImageReader(mPreviewSize);
+            }
+            imageReader = imageReaderManager.getmImageReader();
+
+            Log.e(TAG,"preview width=" + mPreviewSize.getWidth() +
                     ",height=" + mPreviewSize.getHeight() +
                     ", video size width=" + mVideoSize.getWidth() +
                     ", height=" + mVideoSize.getHeight());
@@ -132,7 +145,9 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             Surface previewSurface = new Surface(texture);
             mPreviewBuilder.addTarget(previewSurface);
 
-            mCameraDevice.createCaptureSession(Collections.singletonList(previewSurface),
+            Surface imageReaderSurface = imageReader.getSurface();
+
+            mCameraDevice.createCaptureSession(Arrays.asList(previewSurface, imageReaderSurface),
                     new CameraCaptureSession.StateCallback() {
 
                         @Override
@@ -311,5 +326,9 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
 
     public void setVideoSize(Size videoSize) {
         mVideoSize = videoSize;
+    }
+
+    public CaptureRequest.Builder getPreviewBuilder() {
+        return mPreviewBuilder;
     }
 }

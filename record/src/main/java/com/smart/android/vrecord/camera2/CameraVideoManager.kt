@@ -9,7 +9,10 @@ import android.os.Message
 import android.view.OrientationEventListener
 import android.view.TextureView.SurfaceTextureListener
 import com.smart.android.vrecord.camera2.CameraVideo.OnProgressChangeListener
+import com.smart.android.vrecord.camera2.image.ImageReaderManager
+import com.smart.android.vrecord.camera2.listener.OnCameraResultListener
 import com.smart.android.vrecord.camera2.video.VideoRecorderManager
+
 
 /**
  * Created by Hyu on 2019-08-17.
@@ -22,8 +25,9 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
     private var mContext: Context? = null
     private var mAutoFitTextureView: AutoFitTextureView? = null
     private var mVideoRecorderManager: VideoRecorderManager? = null
+    private var mImageReaderManager: ImageReaderManager? = null
     private var mOnProgressChangeListener: OnProgressChangeListener? = null
-    private var mOnRecordFinishListener: CameraVideo.OnRecordFinishListener? = null
+    private var onCameraResultListener: OnCameraResultListener? = null
     private var mCameraFacing = CameraFacing.BACK
     private var mHandler: Handler? = null
     private var mOrientation = 0
@@ -31,7 +35,8 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
 
     constructor(context: Context?) : this(OpenCameraInterface(context as Activity?)) {
         mContext = context
-        mAlbumOrientationEventListener = AlbumOrientationEventListener(context, SensorManager.SENSOR_DELAY_NORMAL)
+        mAlbumOrientationEventListener =
+            AlbumOrientationEventListener(context, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     private inner class AlbumOrientationEventListener : OrientationEventListener {
@@ -69,9 +74,12 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
         mAutoFitTextureView = textureView
     }
 
-    override fun setOnRecordFinishListener(onRecordFinishListener: CameraVideo.OnRecordFinishListener) {
-        mOnRecordFinishListener = onRecordFinishListener
+    override fun setOnCameraResultListener(resultListener: OnCameraResultListener) {
+        this.onCameraResultListener = resultListener
     }
+//    override fun setOnRecordFinishListener(onRecordFinishListener: CameraVideo.OnRecordFinishListener) {
+//        mOnRecordFinishListener = onRecordFinishListener
+//    }
 
     // ***************SurfaceTextureListener****************** //
     override fun onSurfaceTextureAvailable(
@@ -79,7 +87,9 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
         width: Int,
         height: Int
     ) {
-        mOpenCameraInterface!!.openCamera(mCameraFacing.ordinal)
+        if (mImageReaderManager == null)
+            mImageReaderManager = ImageReaderManager()
+        mOpenCameraInterface!!.openCamera(mCameraFacing.ordinal, mImageReaderManager)
     }
 
     override fun onSurfaceTextureSizeChanged(
@@ -95,21 +105,26 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
     }
 
     override fun onSurfaceTextureUpdated(surfaceTexture: SurfaceTexture) {}
+
     override fun onPause() {
         mOpenCameraInterface!!.closeCamera()
         stopRecordingVideo()
+        mImageReaderManager?.closeImageReader()
         mOpenCameraInterface.stopBackgroundThread()
         mAlbumOrientationEventListener!!.disable()
-        if (mHandler != null) mHandler!!.removeMessages(TIMER)
+        mHandler?.removeMessages(TIMER)
     }
 
     override fun onResume() {
+        if (mImageReaderManager == null) {
+            mImageReaderManager = ImageReaderManager()
+        }
         if (mAlbumOrientationEventListener!!.canDetectOrientation()) {
             mAlbumOrientationEventListener!!.enable()
         }
         mOpenCameraInterface!!.startBackgroundThread()
         if (mAutoFitTextureView!!.isAvailable) {
-            mOpenCameraInterface.openCamera(mCameraFacing.ordinal)
+            mOpenCameraInterface.openCamera(mCameraFacing.ordinal, mImageReaderManager)
         } else {
             mAutoFitTextureView!!.surfaceTextureListener = this
         }
@@ -117,9 +132,7 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
 
     override fun pauseRecordVideo() {
         if (mVideoRecorderManager != null) mVideoRecorderManager!!.pause()
-        if (mHandler != null) {
-            mHandler!!.removeMessages(TIMER)
-        }
+        mHandler?.removeMessages(TIMER)
     }
 
     override fun resumeRecordVideo() {
@@ -131,13 +144,31 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
         if (mVideoRecorderManager == null) {
             mVideoRecorderManager = VideoRecorderManager(mContext as Activity?)
         }
-        mVideoRecorderManager!!.setOrientation(mOrientation)
-        mVideoRecorderManager!!.setVideoPath(videoPath)
-        mVideoRecorderManager!!.setVideoSize(mOpenCameraInterface!!.videoSize)
-        mVideoRecorderManager!!.setSensorOrientation(mOpenCameraInterface.sensorOrientation)
-        mVideoRecorderManager!!.startRecordingVideo(mOpenCameraInterface, mAutoFitTextureView)
-        mVideoRecorderManager!!.setRecordInfoListener { if (mOnRecordFinishListener != null) mOnRecordFinishListener!!.onRecordFinished() }
+
+        mVideoRecorderManager?.apply {
+            setOrientation(mOrientation)
+            setVideoPath(videoPath)
+            setVideoSize(mOpenCameraInterface.videoSize)
+            setSensorOrientation(mOpenCameraInterface.sensorOrientation)
+            setRecordInfoListener(onCameraResultListener)
+            startRecordingVideo(mOpenCameraInterface, mAutoFitTextureView)
+        }
+//        mVideoRecorderManager!!.setRecordInfoListener { if (mOnRecordFinishListener != null) mOnRecordFinishListener!!.onRecordFinished() }
         if (mHandler != null) mHandler!!.sendEmptyMessage(START)
+    }
+
+    /**拍照*/
+    override fun takePicture(outPath: String) {
+        if (mImageReaderManager == null) {
+            mImageReaderManager = ImageReaderManager()
+        }
+        mImageReaderManager?.apply {
+            setSensorOrientation(mOrientation)
+            setmOutputPath(outPath)
+//            setupImageReader(mOpenCameraInterface.previewSize)
+            setResultListener(onCameraResultListener)
+            takePicture(mOpenCameraInterface, mAutoFitTextureView)
+        }
     }
 
     override fun startPreview() {
@@ -187,6 +218,7 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
             })
         }
     }
+
 
     companion object {
         private const val DONE = 102

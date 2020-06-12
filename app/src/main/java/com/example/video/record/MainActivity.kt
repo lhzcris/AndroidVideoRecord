@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.MediaController
 import com.smart.android.vrecord.VideoRecordPicker
-import com.smart.android.vrecord.ui.TakePictureActivity
 import com.smart.android.vrecord.ui.RecordVideoActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
 
         VideoRecordPicker.getInstance().recordBuilder =
-            VideoRecordPicker.RecordBuilder().setMaxDuration((30 * 1000).toLong())
+            VideoRecordPicker.RecordBuilder().setMaxDuration((10 * 1000).toLong())
 
         VideoRecordPicker.getInstance().setFinishListener { videoPath ->
 
@@ -46,11 +45,12 @@ class MainActivity : AppCompatActivity() {
         }
         video_view.setMediaController(MediaController(this))
 
-        addView("录像", RecordVideoActivity::class.java)
+        addView("录像——默认样式", RecordVideoActivity::class.java)
 
-//        addView("拍照", TestActivity::class.java)
+        addView("录像-自定义样式", TakeVideoActivity::class.java)
 
-        addView("cameraX", TakePictureActivity::class.java)
+
+        addView("拍照扫描-自定义样式", TakePictureActivity::class.java)
     }
 
     fun addView(name: String, clazz: Class<*>) {

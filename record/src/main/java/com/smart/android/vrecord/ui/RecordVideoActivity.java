@@ -26,6 +26,7 @@ import com.smart.android.vrecord.VideoRecordPicker;
 import com.smart.android.vrecord.camera2.AutoFitTextureView;
 import com.smart.android.vrecord.camera2.CameraVideo;
 import com.smart.android.vrecord.camera2.CameraVideoManager;
+import com.smart.android.vrecord.camera2.listener.OnCameraResultAdapter;
 
 import java.io.File;
 import java.util.Locale;
@@ -87,7 +88,9 @@ public class RecordVideoActivity extends CBaseActivity {
      */
     private boolean canSuspend;
 
-    /**权限*/
+    /**
+     * 权限
+     */
     private boolean isPermission;
 
     @Override
@@ -112,7 +115,7 @@ public class RecordVideoActivity extends CBaseActivity {
         /**暂停录制只有在24以上才生效*/
         canSuspend = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
         btnSuspend.setOnClickListener(v -> {
-            if (!canSuspend||!isPermission)
+            if (!canSuspend || !isPermission)
                 return;
             if (isSuspend) {
                 mCameraVideo.resumeRecordVideo();
@@ -132,7 +135,7 @@ public class RecordVideoActivity extends CBaseActivity {
             }
         });
         ivFacing.setOnClickListener(v -> {
-            if (!isPermission)return;
+            if (!isPermission) return;
             mCameraVideo.switchCameraFacing();
         });
         findViewById(R.id.tv_cancle).setOnClickListener(v -> reStartPreview());
@@ -154,7 +157,14 @@ public class RecordVideoActivity extends CBaseActivity {
     private void initCamera() {
         mCameraVideo = new CameraVideoManager(this);
         mCameraVideo.setAutoFitTextureView(mTextureView);
-        mCameraVideo.setOnRecordFinishListener(() -> stopRecord());
+//        mCameraVideo.setOnRecordFinishListener(() -> stopRecord());
+        mCameraVideo.setOnCameraResultListener(new OnCameraResultAdapter() {
+            @Override
+            public void onVideoRecorded(String filePath) {
+                super.onVideoRecorded(filePath);
+                stopRecord();
+            }
+        });
         mCameraVideo.setOnProgressChangeListener(duration -> {
             mCurrentDuration = duration;
             int minute = duration / 60;
@@ -211,7 +221,10 @@ public class RecordVideoActivity extends CBaseActivity {
         llCover.setVisibility(View.GONE);
         mVideoPath = getVideoFilePath(RecordVideoActivity.this);
         Log.e("path", mVideoPath);
+
         mCameraVideo.startRecordingVideo(mVideoPath);
+
+
         mTitleView.setCompoundDrawablesWithIntrinsicBounds(
                 R.drawable.vr_drawable_timer_dot, 0, 0, 0);
         if (mAnimator == null) {

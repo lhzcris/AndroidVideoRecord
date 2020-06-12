@@ -10,5 +10,12 @@ interface PreViewOnChanagerListener {
 
     fun onPreviewPause()
 
-    fun onRestUI();
+//    fun startRecord();
+
+//    fun stopRecord();
+
+    fun progressChangeListener(duration: Int);
+
+//    fun reStartPreview();
+
 }

@@ -17,7 +17,8 @@ import android.view.TextureView;
 import androidx.annotation.NonNull;
 
 import com.smart.android.vrecord.VideoRecordPicker;
-import com.smart.android.vrecord.camera2.OnRecordInfoListener;
+import com.smart.android.vrecord.camera2.listener.OnCameraResultListener;
+import com.smart.android.vrecord.camera2.listener.OnRecordInfoListener;
 import com.smart.android.vrecord.camera2.OpenCameraInterface;
 
 import java.io.IOException;
@@ -61,7 +62,9 @@ public class VideoRecorderManager {
     private CaptureRequest.Builder mPreviewBuilder;
     private int mOrientation;
 
-    private OnRecordInfoListener recordInfoListener;
+//    private OnRecordInfoListener recordInfoListener;
+
+    private OnCameraResultListener recordInfoListener;
 
     public VideoRecorderManager(Activity activity) {
         mActivity = activity;
@@ -79,7 +82,8 @@ public class VideoRecorderManager {
         mOrientation = orientation;
     }
 
-    public void setRecordInfoListener(OnRecordInfoListener recordInfoListener) {
+
+    public void setRecordInfoListener(OnCameraResultListener recordInfoListener) {
         this.recordInfoListener = recordInfoListener;
     }
 
@@ -105,10 +109,10 @@ public class VideoRecorderManager {
                 Log.e("sss", what + "");
                 if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
                     Log.e("sss", "完成录制");
+                    stopRecordingVideo();
                     if (recordInfoListener != null) {
-                        recordInfoListener.onFinishRecord();
+                        recordInfoListener.onVideoRecorded(mVideoPath);
                     }
-
                 }
             });
         }
