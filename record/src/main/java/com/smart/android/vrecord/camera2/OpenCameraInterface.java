@@ -92,7 +92,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             }
             imageReader = imageReaderManager.getmImageReader();
 
-            Log.e(TAG, "preview width=" + mPreviewSize.getWidth() +
+            Logger.e( "preview width=" + mPreviewSize.getWidth() +
                     ",height=" + mPreviewSize.getHeight() +
                     ", video size width=" + mVideoSize.getWidth() +
                     ", height=" + mVideoSize.getHeight());

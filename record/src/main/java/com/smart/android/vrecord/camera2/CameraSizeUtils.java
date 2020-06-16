@@ -3,6 +3,7 @@ package com.smart.android.vrecord.camera2;
 import android.util.Log;
 import android.util.Size;
 
+import com.smart.android.utils.Logger;
 import com.smart.android.utils.Utility;
 import com.smart.android.vrecord.OptionSize;
 import com.smart.android.vrecord.VideoRecordPicker;
@@ -17,7 +18,7 @@ import java.util.List;
  * Email: fvaryu@163.com
  */
 public final class CameraSizeUtils {
-    private static final String TAG = CameraSizeUtils.class.getName();
+//    private static final String TAG = CameraSizeUtils.class.getName();
 
     /**
      * 默认取16：9的尺寸，没有的取降序最后一个寸尺
@@ -28,7 +29,7 @@ public final class CameraSizeUtils {
     @Deprecated
     public static Size chooseVideoSize(Size[] choices) {
         for (Size size : choices) {
-            Log.d(TAG, "video size width=" + size.getWidth() + ",height=" + size.getHeight());
+            Logger.e("video size width=" + size.getWidth() + ",height=" + size.getHeight());
             if (size.getWidth() == size.getHeight() * 16 / 9 && size.getWidth() <= 1920) {
                 return size;
             }
@@ -38,7 +39,7 @@ public final class CameraSizeUtils {
 
 
     public static Size chooseMeadiaSzie(Size[] choices, int screenHeight, int screenWidth) {
-        Log.e(TAG, "screenWidth=" + screenWidth + ",screenHeight=" + screenHeight);
+        Logger.e("screenWidth=" + screenWidth + ",screenHeight=" + screenHeight);
         int oSize = VideoRecordPicker.getInstance().getOptionSize();
         if (oSize == OptionSize.size4_3) {//4:3
             for (Size size : choices) {
@@ -98,7 +99,7 @@ public final class CameraSizeUtils {
         int w = aspectRatio.getWidth();
         int h = aspectRatio.getHeight();
         for (Size option : choices) {
-            Log.d(TAG, "preview size width=" + option.getWidth() + ",height=" + option.getHeight());
+            Logger.d("preview size width=" + option.getWidth() + ",height=" + option.getHeight());
 //            if (option.getHeight() == option.getWidth() * h / w &&
 //                    option.getWidth() >= width && option.getHeight() >= height) {
 //                bigEnough.add(option);
@@ -134,7 +135,7 @@ public final class CameraSizeUtils {
         } else if (notBigEnoughSizes.size() > 0) {
             return Collections.max(notBigEnoughSizes, new CompareSizesByArea());
         } else {
-            Log.d(TAG, "未找到合适的预览尺寸");
+            Logger.d("未找到合适的预览尺寸");
             return sizes[0];
         }
     }

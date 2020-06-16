@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.MediaController
+import com.smart.android.utils.Logger
 import com.smart.android.vrecord.OptionSize
 import com.smart.android.vrecord.VideoRecordPicker
 import com.smart.android.vrecord.ui.RecordVideoActivity
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
+        Logger.setDebug(true)
 
         VideoRecordPicker.getInstance().recordBuilder =
             VideoRecordPicker.RecordBuilder()

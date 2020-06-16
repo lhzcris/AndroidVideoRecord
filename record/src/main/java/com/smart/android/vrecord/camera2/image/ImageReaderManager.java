@@ -21,6 +21,7 @@ import android.view.TextureView;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
+import com.smart.android.utils.Logger;
 import com.smart.android.vrecord.camera2.listener.OnCameraResultListener;
 import com.smart.android.vrecord.camera2.OpenCameraInterface;
 
@@ -82,13 +83,13 @@ public class ImageReaderManager {
             mBackgroundHandler.post(new ImageSaver(image, new File(mOutputPath), new ImageSaver.ImageSaverCallback() {
                 @Override
                 public void onSuccessFinish(byte[] bytes) {
-                    Log.e("success", mOutputPath);
+                    Logger.e("mOutputPath==" + mOutputPath);
                     UIhandler.post(() -> {
 //                        if (VideoRecordPicker.getInstance().getFinishListener() != null) {
 //                            VideoRecordPicker.getInstance().getFinishListener().onFinishListener(mOutputPath);
 //                        }
-                        if (resultListener!=null)
-                            resultListener.onPhotoTaken(bytes,mOutputPath);
+                        if (resultListener != null)
+                            resultListener.onPhotoTaken(bytes, mOutputPath);
                     });
                     unlockFocus();
                 }
@@ -193,7 +194,10 @@ public class ImageReaderManager {
                         || CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN == afState) {
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                     if (aeState == null ||
-                            aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
+                            (CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN != afState
+                                    && aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED)//todo 自动对焦问题
+//                            aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED
+                    ) {
                         mPreviewState = STATE_PICTURE_TAKEN;
 //                        captureStillPicture();
                         capture();
