@@ -5,15 +5,20 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.TranslateAnimation
+import com.gyf.immersionbar.BarHide
+import com.gyf.immersionbar.ImmersionBar
 import com.smart.android.utils.DisplayUtil
 import com.smart.android.utils.ToastUtils
+import com.smart.android.vrecord.OptionSize
+import com.smart.android.vrecord.VideoRecordPicker
 import com.smart.android.vrecord.camera2.listener.OnCameraResultAdapter
 import com.smart.android.vrecord.ui.CBaseActivity
 import com.smart.android.vrecord.ui.CameraPreviewFragment
+import com.smart.android.vrecord.ui.FullScreenBaseActivity
 import com.smart.android.vrecord.ui.PreViewOnChanagerListener
 import kotlinx.android.synthetic.main.activity_take_picture.*
 
-class TakePictureActivity : CBaseActivity(), PreViewOnChanagerListener {
+class TakePictureActivity : FullScreenBaseActivity(), PreViewOnChanagerListener {
 
     override fun layout() = R.layout.activity_take_picture
 
@@ -21,6 +26,10 @@ class TakePictureActivity : CBaseActivity(), PreViewOnChanagerListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        VideoRecordPicker.getInstance().recordBuilder?.apply {
+            setOptionSize(OptionSize.sizeFull)
+        }
 
         fragment = supportFragmentManager.findFragmentByTag("cx") as CameraPreviewFragment?
             ?: CameraPreviewFragment.newInstance()
@@ -42,6 +51,10 @@ class TakePictureActivity : CBaseActivity(), PreViewOnChanagerListener {
         tv_take.setOnClickListener {
             fragment?.takePicture()
         }
+
+//        val lp=iv_close.layoutParams
+        val dp15 = DisplayUtil.dip2px(this, 15)
+        iv_close.setPadding(dp15, dp15 + ImmersionBar.getStatusBarHeight(this), 0, 0)
     }
 
 

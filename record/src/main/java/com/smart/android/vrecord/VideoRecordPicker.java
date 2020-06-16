@@ -45,6 +45,10 @@ public class VideoRecordPicker {
         return recordBuilder == null ? 0 : recordBuilder.maxDuration;
     }
 
+    public int getOptionSize() {
+        return recordBuilder == null ? OptionSize.size16_9 : recordBuilder.optionSize;
+    }
+
     public RecordBuilder getRecordBuilder() {
         return recordBuilder;
     }
@@ -69,12 +73,19 @@ public class VideoRecordPicker {
 
         private long maxDuration;//最大录制时长
 
+        private int optionSize = OptionSize.size16_9;
+
         public long getMaxDuration() {
             return maxDuration;
         }
 
         public RecordBuilder setMaxDuration(/*ms 毫米啊*/long maxDuration) {
             this.maxDuration = maxDuration;
+            return this;
+        }
+
+        public RecordBuilder setOptionSize(int optionSize) {
+            this.optionSize = optionSize;
             return this;
         }
     }

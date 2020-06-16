@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Path;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.smart.android.vrecord.OptionSize;
 import com.smart.android.vrecord.R;
 import com.smart.android.vrecord.VideoRecordPicker;
 import com.smart.android.vrecord.camera2.AutoFitTextureView;
@@ -106,6 +108,13 @@ public class RecordVideoActivity extends CBaseActivity {
 
 
     private void initUI() {
+
+        //默认16/9 
+        VideoRecordPicker.RecordBuilder builder = VideoRecordPicker.getInstance().getRecordBuilder();
+        if (builder != null) {
+            builder.setOptionSize(OptionSize.size16_9);
+        }
+
         llCover = findViewById(R.id.ll_cover);
         ivRecord = findViewById(R.id.iv_record);
         mTitleView = findViewById(R.id.tv_title);

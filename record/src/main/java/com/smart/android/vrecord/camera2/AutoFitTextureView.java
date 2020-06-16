@@ -5,6 +5,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.TextureView;
 
+import com.smart.android.vrecord.OptionSize;
+import com.smart.android.vrecord.VideoRecordPicker;
+
 /**
  * A {@link TextureView} that can be adjusted to a specified aspect ratio.
  */
@@ -50,11 +53,20 @@ public class AutoFitTextureView extends TextureView {
         if (0 == mRatioWidth || 0 == mRatioHeight) {
             setMeasuredDimension(width, height);
         } else {
-            //让TextureView总是达到最大边界，超出部分不进行预览（实际上还是能拍到的）。代码如下：
-            if (width < height * mRatioWidth / mRatioHeight) {
-                setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
+            if (VideoRecordPicker.getInstance().getOptionSize() == OptionSize.sizeFull) {
+                //全屏
+                //让TextureView总是达到最大边界，超出部分不进行预览（实际上还是能拍到的）
+                if (width > height * mRatioWidth / mRatioHeight) {
+                    setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
+                } else {
+                    setMeasuredDimension(height * mRatioWidth / mRatioHeight, height);
+                }
             } else {
-                setMeasuredDimension(height * mRatioWidth / mRatioHeight, height);
+                if (width < height * mRatioWidth / mRatioHeight) {
+                    setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
+                } else {
+                    setMeasuredDimension(height * mRatioWidth / mRatioHeight, height);
+                }
             }
         }
     }

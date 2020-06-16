@@ -30,6 +30,7 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.smart.android.utils.DisplayUtil;
 import com.smart.android.utils.Logger;
 import com.smart.android.vrecord.camera2.image.ImageReaderManager;
 
@@ -80,17 +81,18 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
                 return;
             }
 
+            int screenHeight = DisplayUtil.getScreenHeight(mContext);
+            int screenWidth = DisplayUtil.getScreenWidth(mContext);
             mSensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-            mVideoSize = CameraSizeUtils.chooseVideoSize(map.getOutputSizes(MediaRecorder.class));
+            mVideoSize = CameraSizeUtils.chooseMeadiaSzie(map.getOutputSizes(MediaRecorder.class), screenHeight, screenWidth);
             mPreviewSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), mVideoSize);
-//            mPicSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(ImageFormat.JPEG));
 
             if (imageReaderManager != null) {
                 imageReaderManager.setupImageReader(mPreviewSize);
             }
             imageReader = imageReaderManager.getmImageReader();
 
-            Log.e(TAG,"preview width=" + mPreviewSize.getWidth() +
+            Log.e(TAG, "preview width=" + mPreviewSize.getWidth() +
                     ",height=" + mPreviewSize.getHeight() +
                     ", video size width=" + mVideoSize.getWidth() +
                     ", height=" + mVideoSize.getHeight());

@@ -16,14 +16,18 @@ abstract class CBaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE) // 去掉标题栏
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        ) // 设置全屏
+        window.requestFeature(Window.FEATURE_NO_TITLE) // 去掉标题栏
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) // 设置全屏
         ActivityStackManager.getInstance().addActivity(this)
         if (layout() > 0) {
             setContentView(layout())
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ActivityStackManager.getInstance().remove(this)
+    }
+
+
 }

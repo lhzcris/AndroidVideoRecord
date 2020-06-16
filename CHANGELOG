@@ -1,5 +1,9 @@
 change
 
+0.0.5
+------
+可配置预览尺寸
+
 0.0.3
 -------
 可自定义ui交互，CameraPreviewFragment

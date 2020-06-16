@@ -40,4 +40,6 @@ dependencies {
     implementation project(":record")
 
     implementation 'com.smart.android:utils:1.0.8'
+
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
 }

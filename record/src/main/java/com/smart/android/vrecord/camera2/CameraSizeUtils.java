@@ -3,6 +3,10 @@ package com.smart.android.vrecord.camera2;
 import android.util.Log;
 import android.util.Size;
 
+import com.smart.android.utils.Utility;
+import com.smart.android.vrecord.OptionSize;
+import com.smart.android.vrecord.VideoRecordPicker;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,11 +25,10 @@ public final class CameraSizeUtils {
      * @param choices
      * @return
      */
-   public static Size chooseVideoSize(Size[] choices) {
+    @Deprecated
+    public static Size chooseVideoSize(Size[] choices) {
         for (Size size : choices) {
             Log.d(TAG, "video size width=" + size.getWidth() + ",height=" + size.getHeight());
-//            if (size.getWidth() == size.getHeight() * 4 / 3 && size.getWidth() <= 1080) {
-//            if (size.getWidth() == size.getHeight() * 16 / 9 && size.getWidth() <= 1080) {
             if (size.getWidth() == size.getHeight() * 16 / 9 && size.getWidth() <= 1920) {
                 return size;
             }
@@ -33,13 +36,64 @@ public final class CameraSizeUtils {
         return choices[choices.length - 1];
     }
 
+
+    public static Size chooseMeadiaSzie(Size[] choices, int screenHeight, int screenWidth) {
+        Log.e(TAG, "screenWidth=" + screenWidth + ",screenHeight=" + screenHeight);
+        int oSize = VideoRecordPicker.getInstance().getOptionSize();
+        if (oSize == OptionSize.size4_3) {//4:3
+            for (Size size : choices) {
+                if (size.getWidth() == size.getHeight() * 4 / 3 && size.getWidth() <= 1280) { //1280/960
+                    return size;
+                }
+            }
+        } else if (oSize == OptionSize.sizeFull) {//全屏
+
+            return getNearFullSize(choices, screenHeight, screenWidth);
+
+        } else if (oSize == OptionSize.size1_1) {//1:1
+            for (Size size : choices) {
+                if (size.getWidth() == size.getHeight()) {
+                    return size;
+                }
+            }
+        } else {//16:9
+            for (Size size : choices) {
+                if (size.getWidth() == size.getHeight() * 16 / 9 && size.getWidth() <= 1920) {//1920/1080
+                    return size;
+                }
+            }
+        }
+
+        return choices[choices.length - 1];
+    }
+
+    private static Size getNearFullSize(Size[] choices, int screenHeight, int screenWidth) {
+        Size nearSize = choices[choices.length - 1];
+        double tmp = 0;
+        double mindiff = 100;
+        double x_d_y = (double) screenWidth / (double) screenHeight;
+//        Log.e("div", screenDiv + ",," + x_d_y);
+        for (int i = choices.length - 1; i >= 0; i--) {//倒叙 取最接近的比例长得分辨率最高的那个
+            Size size = choices[i];
+            tmp = Utility.roundTwo(Math.abs((double) size.getHeight() / (double) size.getWidth() - x_d_y));
+            if (tmp < mindiff) {
+                mindiff = tmp;
+                nearSize = size;
+            }
+        }
+        return nearSize;
+    }
+
     /**
-     * 取16：9尺寸中最大的一个尺寸，没有的话取降序第一个尺寸
+     * 预览尺寸
+     * <p>
+     * 取配置尺寸中最大的一个尺寸，没有的话取降序第一个尺寸
+     *
      * @param choices
      * @param aspectRatio
      * @return
      */
-   public static Size chooseOptimalSize(Size[] choices,Size aspectRatio) {
+    public static Size chooseOptimalSize(Size[] choices, Size aspectRatio) {
         List<Size> bigEnough = new ArrayList<>();
         int w = aspectRatio.getWidth();
         int h = aspectRatio.getHeight();

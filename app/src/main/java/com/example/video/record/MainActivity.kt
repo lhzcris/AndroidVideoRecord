@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.MediaController
+import com.smart.android.vrecord.OptionSize
 import com.smart.android.vrecord.VideoRecordPicker
 import com.smart.android.vrecord.ui.RecordVideoActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,8 +21,9 @@ class MainActivity : AppCompatActivity() {
 
 
         VideoRecordPicker.getInstance().recordBuilder =
-            VideoRecordPicker.RecordBuilder().setMaxDuration((10 * 1000).toLong())
-
+            VideoRecordPicker.RecordBuilder()
+                .setMaxDuration((10 * 1000).toLong())
+                .setOptionSize(OptionSize.size16_9)
         VideoRecordPicker.getInstance().setFinishListener { videoPath ->
 
             val file = File(videoPath)
