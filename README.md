@@ -2,7 +2,7 @@
 
 #引用
 ```groovy
-implementation "com.smart.android:videorecord:0.0.6"
+implementation "com.smart.android:videorecord:0.0.8"
 ```
 
 ##参数
@@ -14,7 +14,7 @@ implementation "com.smart.android:videorecord:0.0.6"
 ##使用
 
 ```
-    1。默认样式的视频拍摄
+    1。默认样式的视频拍摄ø
 
     VideoRecordPicker.getInstance().recordBuilder =
             VideoRecordPicker.RecordBuilder().setMaxDuration((30 * 1000).toLong())

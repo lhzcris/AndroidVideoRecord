@@ -77,9 +77,6 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
     override fun setOnCameraResultListener(resultListener: OnCameraResultListener) {
         this.onCameraResultListener = resultListener
     }
-//    override fun setOnRecordFinishListener(onRecordFinishListener: CameraVideo.OnRecordFinishListener) {
-//        mOnRecordFinishListener = onRecordFinishListener
-//    }
 
     // ***************SurfaceTextureListener****************** //
     override fun onSurfaceTextureAvailable(

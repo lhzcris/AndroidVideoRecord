@@ -18,7 +18,6 @@ import java.util.List;
  * Email: fvaryu@163.com
  */
 public final class CameraSizeUtils {
-//    private static final String TAG = CameraSizeUtils.class.getName();
 
     /**
      * 默认取16：9的尺寸，没有的取降序最后一个寸尺
@@ -100,10 +99,6 @@ public final class CameraSizeUtils {
         int h = aspectRatio.getHeight();
         for (Size option : choices) {
             Logger.d("preview size width=" + option.getWidth() + ",height=" + option.getHeight());
-//            if (option.getHeight() == option.getWidth() * h / w &&
-//                    option.getWidth() >= width && option.getHeight() >= height) {
-//                bigEnough.add(option);
-//            }
             if (option.getHeight() == option.getWidth() * h / w) {
                 bigEnough.add(option);
             }

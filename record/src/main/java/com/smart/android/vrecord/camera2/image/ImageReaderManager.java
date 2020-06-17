@@ -101,41 +101,26 @@ public class ImageReaderManager {
             }));
 
 
-        }, null);
+        }, mBackgroundHandler);
 
     }
 
-
-//    OpenCameraInterface openCameraInterface;
-//    TextureView textureView;
 
     public void takePicture(OpenCameraInterface openCameraInterface, TextureView textureView) {
         mCaptureSession = openCameraInterface.getmPreviewSession();
         mCameraDevice = openCameraInterface.getCameraDevice();
         mBackgroundHandler = openCameraInterface.getBackgroundHandler();
 
-//        this.openCameraInterface = openCameraInterface;
-//        this.textureView = textureView;
-
-//        capture(openCameraInterface, textureView);
         mBackgroundHandler.post(() -> {
             lockFocus(openCameraInterface);
         });
     }
 
-    private void capture() {//OpenCameraInterface openCameraInterface, TextureView textureView
+    private void capture() {
         if (mCameraDevice == null) return;
         try {
             //首先我们创建请求拍照的CaptureRequest
             final CaptureRequest.Builder mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-
-//            SurfaceTexture texture = textureView.getSurfaceTexture();
-//            assert texture != null;
-//            texture.setDefaultBufferSize(openCameraInterface.getPreviewSize().getWidth(),
-//                    openCameraInterface.getPreviewSize().getHeight());
-//            Surface previewSurface = new Surface(texture);
-//            mCaptureBuilder.addTarget(previewSurface);
-
 
             mCaptureBuilder.addTarget(mImageReader.getSurface());
 
@@ -153,13 +138,14 @@ public class ImageReaderManager {
 
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-
+                    Logger.e("onCaptureCompleted:");
                 }
             };
 
             mCaptureSession.capture(mCaptureBuilder.build(), captureCallback, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
+            Logger.e("Error during capturing picture");
         }
     }
 
@@ -172,7 +158,7 @@ public class ImageReaderManager {
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
 
             mPreviewState = STATE_WAITING_LOCK;
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), captureCallback, null);
+            mCaptureSession.capture(mPreviewRequestBuilder.build(), captureCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -186,11 +172,12 @@ public class ImageReaderManager {
             }
             case STATE_WAITING_LOCK: {
                 final Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
+                Log.e("afState", "afState=" + afState);
                 if (afState == null) {
                     capture();
                 } else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState
                         || CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState
-                        || CaptureResult.CONTROL_AF_STATE_INACTIVE == afState
+//                        || CaptureResult.CONTROL_AF_STATE_INACTIVE == afState
                         || CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN == afState) {
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                     if (aeState == null ||
@@ -199,7 +186,6 @@ public class ImageReaderManager {
 //                            aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED
                     ) {
                         mPreviewState = STATE_PICTURE_TAKEN;
-//                        captureStillPicture();
                         capture();
                     } else {
                         runPreCaptureSequence();
@@ -220,7 +206,6 @@ public class ImageReaderManager {
                 final Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                 if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
                     mPreviewState = STATE_PICTURE_TAKEN;
-//                    captureStillPicture();
                     capture();
                 }
                 break;
@@ -234,7 +219,7 @@ public class ImageReaderManager {
         try {
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
             mPreviewState = STATE_WAITING_PRE_CAPTURE;
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), captureCallback, null);
+            mCaptureSession.capture(mPreviewRequestBuilder.build(), captureCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
         }
     }
@@ -269,36 +254,6 @@ public class ImageReaderManager {
         }
 
     };
-
-//    protected int getVideoOrientation( int sensorPosition) {
-//        final int degrees;
-//        switch (sensorPosition) {
-//            case 90:
-//                degrees = 0;
-//                break; // Natural orientation
-//            case 0:
-//                degrees = 90;
-//                break; // Landscape left
-//            case 270:
-//                degrees = 180;
-//                break;// Upside down
-//            case 180:
-//                degrees = 270;
-//                break;// Landscape right
-//            case -1:
-//            default:
-//                degrees = 0;
-//                break;
-//        }
-//
-//        final int rotate;
-////        if (Objects.equals(mCameraId, mFaceFrontCameraId)) {
-////            rotate = (360 + mFaceFrontCameraOrientation + degrees) % 360;
-////        } else {
-////            rotate = (360 + mFaceBackCameraOrientation - degrees) % 360;
-////        }
-//        return rotate;
-//    }
 
 
     public void setSensorOrientation(Integer mSensorOrientation) {

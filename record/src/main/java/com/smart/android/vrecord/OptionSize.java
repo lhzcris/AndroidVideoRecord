@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
  * 输出尺寸
  */
 @Retention(RetentionPolicy.SOURCE)
-@IntDef({OptionSize.size4_3, OptionSize.size16_9, OptionSize.sizeFull})
+@IntDef({OptionSize.size4_3, OptionSize.size16_9, OptionSize.size1_1, OptionSize.sizeFull})
 public @interface OptionSize {
     int size4_3 = 100;
     int size16_9 = 101;
