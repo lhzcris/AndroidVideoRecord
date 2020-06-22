@@ -106,7 +106,7 @@ public class ImageReaderManager {
     }
 
 
-    public void takePicture(OpenCameraInterface openCameraInterface, TextureView textureView) {
+    public void takePicture(OpenCameraInterface openCameraInterface) {
         mCaptureSession = openCameraInterface.getmPreviewSession();
         mCameraDevice = openCameraInterface.getCameraDevice();
         mBackgroundHandler = openCameraInterface.getBackgroundHandler();
@@ -142,7 +142,7 @@ public class ImageReaderManager {
                 }
             };
 
-            mCaptureSession.capture(mCaptureBuilder.build(), captureCallback, null);
+            mCaptureSession.capture(mCaptureBuilder.build(), captureCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
             Logger.e("Error during capturing picture");
@@ -172,19 +172,37 @@ public class ImageReaderManager {
             }
             case STATE_WAITING_LOCK: {
                 final Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
-                Log.e("afState", "afState=" + afState);
+                Logger.e("afState=" + afState);
+//                if (afState == null) {
+//                    capture();
+//                } else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState
+//                        || CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState
+////                        || CaptureResult.CONTROL_AF_STATE_INACTIVE == afState
+//                        || CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN == afState) {
+//                    Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
+////                    if (aeState == null ||
+////                            (CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN != afState
+////                                    && aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED)//todo 自动对焦问题
+//////                            aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED
+////                    ) {
+//                    if (aeState == null || (CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN != afState
+//                            && aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED)) {
+//                        mPreviewState = STATE_PICTURE_TAKEN;
+//                        capture();
+//                    } else {
+//                        runPreCaptureSequence();
+//                    }
+//                }
+//                break;
                 if (afState == null) {
                     capture();
                 } else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState
                         || CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState
-//                        || CaptureResult.CONTROL_AF_STATE_INACTIVE == afState
+                        || CaptureResult.CONTROL_AF_STATE_INACTIVE == afState
                         || CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN == afState) {
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                     if (aeState == null ||
-                            (CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN != afState
-                                    && aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED)//todo 自动对焦问题
-//                            aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED
-                    ) {
+                            aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
                         mPreviewState = STATE_PICTURE_TAKEN;
                         capture();
                     } else {

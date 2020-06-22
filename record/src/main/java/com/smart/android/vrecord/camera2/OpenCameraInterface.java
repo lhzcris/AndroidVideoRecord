@@ -17,7 +17,10 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.CaptureResult;
+import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.ImageReader;
 import android.media.MediaRecorder;
@@ -46,7 +49,6 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     private Integer mSensorOrientation;
     private Size mVideoSize;
     private Size mPreviewSize;
-    private Size mPicSize;
     private CameraDevice mCameraDevice;
     private AutoFitTextureView mTextureView;
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
@@ -56,6 +58,8 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     private CaptureRequest.Builder mPreviewBuilder;
 
     private ImageReader imageReader;
+
+    private boolean isPreViewReady;
 
     OpenCameraInterface(Activity context) {
         mContext = context;
@@ -92,7 +96,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             }
             imageReader = imageReaderManager.getmImageReader();
 
-            Logger.e( "preview width=" + mPreviewSize.getWidth() +
+            Logger.e("preview width=" + mPreviewSize.getWidth() +
                     ",height=" + mPreviewSize.getHeight() +
                     ", video size width=" + mVideoSize.getWidth() +
                     ", height=" + mVideoSize.getHeight());
@@ -114,6 +118,10 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
 
     public boolean isClose() {
         return mCameraDevice == null;
+    }
+
+    public boolean isPreViewReady() {
+        return isPreViewReady;
     }
 
     void closeCamera() {
@@ -160,9 +168,8 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
 
                         @Override
                         public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-
                         }
-                    }, mBackgroundHandler);
+                    }, null);
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -177,11 +184,42 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             setUpCaptureRequestBuilder(mPreviewBuilder);
             HandlerThread thread = new HandlerThread("CameraPreview");
             thread.start();
-            mPreviewSession.setRepeatingRequest(mPreviewBuilder.build(), null, mBackgroundHandler);
+            mPreviewSession.setRepeatingRequest(mPreviewBuilder.build(), new CameraCaptureSession.CaptureCallback() {
+
+                @Override
+                public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
+                    super.onCaptureFailed(session, request, failure);
+                    isPreViewReady = false;
+                }
+
+                @Override
+                public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+                    super.onCaptureCompleted(session, request, result);
+                    updatePreViewReady(result);
+                }
+
+                @Override
+                public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
+                    super.onCaptureProgressed(session, request, partialResult);
+
+                    updatePreViewReady(partialResult);
+                }
+            }, mBackgroundHandler);
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    /** 预览聚焦成功 方可拍照 */
+    private void updatePreViewReady(CaptureResult result) {
+        final Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
+//                    Log.e("afState", "afState=" + afState);
+        if (afState != null && afState == CaptureResult.CONTROL_AF_STATE_PASSIVE_FOCUSED) {
+//                        Logger.e("update,onCaptureProgressed=" + afState);
+            isPreViewReady = true;
+        }
+
     }
 
     public void updatePreview(CaptureRequest.Builder builder, CameraCaptureSession session) {
@@ -192,6 +230,8 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
 
     private void setUpCaptureRequestBuilder(CaptureRequest.Builder builder) {
         builder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+        // 自动对焦应
+        builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
     }
 
 

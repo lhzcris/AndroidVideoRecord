@@ -38,7 +38,7 @@ class TakePictureActivity : FullScreenBaseActivity(), PreViewOnChanagerListener 
         fragment?.setOnCameraResultListener(object : OnCameraResultAdapter() {
             override fun onPhotoTaken(bytes: ByteArray?, filePath: String?) {
                 super.onPhotoTaken(bytes, filePath)
-                ToastUtils.showShort("path=$filePath")
+                ToastUtils.showShort("success path=$filePath")
                 stopScan()
                 //todo 自己实现获取数据方式
             }

@@ -6,8 +6,10 @@ import android.graphics.SurfaceTexture
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 import android.view.OrientationEventListener
 import android.view.TextureView.SurfaceTextureListener
+import com.smart.android.utils.Logger
 import com.smart.android.vrecord.camera2.CameraVideo.OnProgressChangeListener
 import com.smart.android.vrecord.camera2.image.ImageReaderManager
 import com.smart.android.vrecord.camera2.listener.OnCameraResultListener
@@ -156,6 +158,11 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
 
     /**拍照*/
     override fun takePicture(outPath: String) {
+
+        if (mOpenCameraInterface.isClose || mOpenCameraInterface.isPreViewReady.not())
+            return
+//        Log.e("takee","take pic ${mOpenCameraInterface.isPreViewReady}")
+
         if (mImageReaderManager == null) {
             mImageReaderManager = ImageReaderManager()
         }
@@ -164,7 +171,7 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
             setmOutputPath(outPath)
 //            setupImageReader(mOpenCameraInterface.previewSize)
             setResultListener(onCameraResultListener)
-            takePicture(mOpenCameraInterface, mAutoFitTextureView)
+            takePicture(mOpenCameraInterface)
         }
     }
 

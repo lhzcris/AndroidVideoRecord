@@ -11,12 +11,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.smart.android.utils.Logger
+import com.smart.android.utils.ToastUtils
 import com.smart.android.vrecord.R
 import com.smart.android.vrecord.camera2.CameraVideo
 import com.smart.android.vrecord.camera2.CameraVideoManager
 import com.smart.android.vrecord.camera2.listener.OnCameraResultListener
 import kotlinx.android.synthetic.main.cx_fragment_camera_preview.*
 import java.io.File
+
 
 /**
  * @author liuhuazhong
@@ -31,17 +34,10 @@ class CameraPreviewFragment : Fragment() {
         fun newInstance() = CameraPreviewFragment()
     }
 
-    /**
-     * 预览画面
-     */
-//    private val mTextureView: AutoFitTextureView? = null
-
+    var mLastClickTime = 0L
+    val TIME_INTERVAL = 800L
     /**权限 */
     private var isPermission = false
-    /**
-     * 是否正在录制视频
-     */
-    private val isRecording = false
     /**
      * act不在被覆盖时 是否执行 mCameraVideo.onPause()；
      */
@@ -169,10 +165,14 @@ class CameraPreviewFragment : Fragment() {
     }
 
 
-    /**拍照*/
+    /**拍照 拒绝快速重复点击*/
     fun takePicture() {
-        outPath = getPicFilePath(activity!!)
-        mCameraVideo?.takePicture(outPath)
+        val nowtime = System.currentTimeMillis()
+        if (nowtime - mLastClickTime > TIME_INTERVAL) {
+            mLastClickTime = nowtime
+            outPath = getPicFilePath(activity!!)
+            mCameraVideo?.takePicture(outPath)
+        }
     }
 
 
