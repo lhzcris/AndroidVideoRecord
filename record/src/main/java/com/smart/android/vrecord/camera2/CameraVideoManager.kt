@@ -109,6 +109,7 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
         mOpenCameraInterface!!.closeCamera()
         stopRecordingVideo()
         mImageReaderManager?.closeImageReader()
+        mImageReaderManager = null
         mOpenCameraInterface.stopBackgroundThread()
         mAlbumOrientationEventListener!!.disable()
         mHandler?.removeMessages(TIMER)
@@ -166,7 +167,7 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
         if (mImageReaderManager == null) {
             mImageReaderManager = ImageReaderManager()
         }
-        mImageReaderManager?.apply {
+        mImageReaderManager!!.apply {
             setSensorOrientation(mOrientation)
             setmOutputPath(outPath)
 //            setupImageReader(mOpenCameraInterface.previewSize)
