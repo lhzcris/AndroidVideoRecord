@@ -100,6 +100,7 @@ public class VideoRecorderManager {
         mMediaRecorder.setOutputFile(mVideoPath);
         mMediaRecorder.setVideoEncodingBitRate(10000000);
         mMediaRecorder.setVideoFrameRate(30);
+//        mMediaRecorder.setPreviewDisplay(openCameraInterface.getTextureView().getSurfaceTexture());
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
@@ -207,7 +208,9 @@ public class VideoRecorderManager {
             mMediaRecorder.release();
             mMediaRecorder = null;
         } catch (Exception e) {
-            throw new RuntimeException("已经停止了");
+            e.printStackTrace();
+//            throw new RuntimeException("已经停止了");
+            mMediaRecorder=null;
         }
 
 

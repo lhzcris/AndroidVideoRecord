@@ -36,6 +36,7 @@ import androidx.core.app.ActivityCompat;
 import com.smart.android.utils.DisplayUtil;
 import com.smart.android.utils.Logger;
 import com.smart.android.vrecord.camera2.image.ImageReaderManager;
+import com.smart.android.vrecord.utils.SystemUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -89,10 +90,12 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
             int screenWidth = DisplayUtil.getScreenWidth(mContext);
             mSensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             mVideoSize = CameraSizeUtils.chooseMeadiaSzie(map.getOutputSizes(MediaRecorder.class), screenHeight, screenWidth);
-            mPreviewSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), mVideoSize);
+            Size optimalSize = CameraSizeUtils.chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), mVideoSize);
+            mPreviewSize = SystemUtil.isHuaWei() ? mVideoSize : optimalSize;//兼容华为 尺寸要一致
+
 
             if (imageReaderManager != null) {
-                imageReaderManager.setupImageReader(mPreviewSize);
+                imageReaderManager.setupImageReader(optimalSize);
             }
             imageReader = imageReaderManager.getmImageReader();
 
@@ -211,7 +214,9 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
         }
     }
 
-    /** 预览聚焦成功 方可拍照 */
+    /**
+     * 预览聚焦成功 方可拍照
+     */
     private void updatePreViewReady(CaptureResult result) {
         final Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
 //                    Log.e("afState", "afState=" + afState);
