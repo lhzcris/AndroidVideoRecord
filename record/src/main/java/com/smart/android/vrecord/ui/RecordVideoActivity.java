@@ -29,6 +29,7 @@ import com.smart.android.vrecord.camera2.AutoFitTextureView;
 import com.smart.android.vrecord.camera2.CameraVideo;
 import com.smart.android.vrecord.camera2.CameraVideoManager;
 import com.smart.android.vrecord.camera2.listener.OnCameraResultAdapter;
+import com.smart.android.vrecord.utils.ViewHelperKt;
 
 import java.io.File;
 import java.util.Locale;
@@ -135,13 +136,14 @@ public class RecordVideoActivity extends CBaseActivity {
             }
             isSuspend = !isSuspend;
         });
-        ivRecord.setOnClickListener(v -> {
-            if (!isPermission) return;
+        ViewHelperKt.setOnSingleClickListener(ivRecord, view -> {
+            if (!isPermission) return null;
             if (isRecording) {
                 stopRecord();
             } else {
                 startRecord();
             }
+            return null;
         });
         ivFacing.setOnClickListener(v -> {
             if (!isPermission) return;

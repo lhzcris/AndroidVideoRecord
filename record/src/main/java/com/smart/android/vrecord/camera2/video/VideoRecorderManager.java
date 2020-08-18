@@ -165,7 +165,8 @@ public class VideoRecorderManager {
                                 @Override
                                 public void run() {
                                     // Start recording
-                                    mMediaRecorder.start();
+                                    if (mMediaRecorder != null)
+                                        mMediaRecorder.start();
                                 }
                             });
                         }
@@ -210,7 +211,7 @@ public class VideoRecorderManager {
         } catch (Exception e) {
             e.printStackTrace();
 //            throw new RuntimeException("已经停止了");
-            mMediaRecorder=null;
+            mMediaRecorder = null;
         }
 
 
