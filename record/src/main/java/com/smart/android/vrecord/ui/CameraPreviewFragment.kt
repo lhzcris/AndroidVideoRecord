@@ -231,7 +231,11 @@ class CameraPreviewFragment : Fragment() {
                 initCamera()
             } else {
                 isPermission = false
-                Toast.makeText(context, "权限申请失败", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    resources.getString(R.string.permission_fail),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

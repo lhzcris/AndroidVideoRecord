@@ -2,7 +2,7 @@
 
 #引用
 ```groovy
-implementation "com.smart.android:videorecord:0.1.1"
+implementation "com.smart.android:videorecord:0.1.2"
 ```
 
 ##参数

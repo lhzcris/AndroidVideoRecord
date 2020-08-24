@@ -129,10 +129,10 @@ public class RecordVideoActivity extends CBaseActivity {
                 return;
             if (isSuspend) {
                 mCameraVideo.resumeRecordVideo();
-                btnSuspend.setText("暂停");
+                btnSuspend.setText(getResources().getString(R.string.video_pause));
             } else {
                 mCameraVideo.pauseRecordVideo();
-                btnSuspend.setText("继续");
+                btnSuspend.setText(getResources().getString(R.string.video_continue));
             }
             isSuspend = !isSuspend;
         });
@@ -307,7 +307,7 @@ public class RecordVideoActivity extends CBaseActivity {
                     initCamera();
                 } else {
                     isPermission = false;
-                    Toast.makeText(this, "权限申请失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.permission_fail), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
