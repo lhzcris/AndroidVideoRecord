@@ -4,4 +4,7 @@
     <string name="permission_fail">权限申请失败</string>
     <string name="video_pause">暂停</string>
     <string name="video_continue">继续</string>
+    
+    <string name="video_reset">重置</string>
+    <string name="video_determine">确定</string>
 </resources>

@@ -5,4 +5,7 @@
     <string name="permission_fail">Permission application failed</string>
     <string name="video_pause">pause</string>
     <string name="video_continue">continue</string>
+
+    <string name="video_reset">reset</string>
+    <string name="video_determine">determine</string>
 </resources>

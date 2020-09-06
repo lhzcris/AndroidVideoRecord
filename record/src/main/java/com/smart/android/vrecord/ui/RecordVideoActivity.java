@@ -39,7 +39,7 @@ public class RecordVideoActivity extends CBaseActivity {
     private static final String TAG = "camera";
 
     private RelativeLayout llCover;
-    private Button btnSuspend;
+    private TextView btnSuspend;
     private ImageView ivRecord, ivFacing;
 
     /**

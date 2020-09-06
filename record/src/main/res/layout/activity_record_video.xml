@@ -40,7 +40,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/tv_title" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_suspend"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -48,10 +48,14 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/vr_drawable_pause_bg"
             android:layout_margin="30dp"
-            android:text="暂停"
+            android:text="@string/video_pause"
             android:textColor="#ffffff"
             android:visibility="gone"
+            android:gravity="center"
             android:textSize="12sp"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMaxTextSize="12sp"
+            app:autoSizeMinTextSize="10sp"
             tools:visibility="visible" />
 
         <ImageView
@@ -90,7 +94,7 @@
             android:layout_marginBottom="30dp"
             android:gravity="center"
             android:padding="15dp"
-            android:text="重置"
+            android:text="@string/video_reset"
             android:textSize="16sp"
             android:textColor="#fff" />
 
@@ -105,7 +109,7 @@
             android:gravity="center"
             android:padding="15dp"
             android:textSize="16sp"
-            android:text="确定"
+            android:text="@string/video_determine"
             android:textColor="#fff" />
 
 
