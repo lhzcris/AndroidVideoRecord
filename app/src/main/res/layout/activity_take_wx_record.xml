@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:fitsSystemWindows="false"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher" />
+
+    <com.smart.android.vrecord.xwrecord.JCameraView
+        android:id="@+id/jcameraview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fragment"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        app:duration_max="10000"
+        app:iconLeft="@drawable/ic_back"
+        app:iconMargin="20dp"
+        app:iconRight="@drawable/ic_photo"
+        app:iconSize="30dp"
+        app:iconSrc="@drawable/ic_camera" />
+
+
+</RelativeLayout>

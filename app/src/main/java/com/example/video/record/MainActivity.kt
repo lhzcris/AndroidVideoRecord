@@ -55,6 +55,8 @@ class MainActivity : AppCompatActivity() {
 
 
         addView("拍照扫描-自定义样式", TakePictureActivity::class.java)
+
+        addView("仿微信拍照", TakeWxRecordActivity::class.java)
     }
 
     fun addView(name: String, clazz: Class<*>) {

@@ -1,6 +1,9 @@
 package com.smart.android.vrecord.utils
 
+import android.content.Context
+import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowManager
 
 /**
  * @author liuhuazhong
@@ -29,4 +32,20 @@ inline fun View.setOnSingleClickListener(
         onClick(it)
         this.postDelayed({ this.isClickable = true }, MIN_DELAY_TIME)
     }
+}
+
+fun Context.getScreenHeight(): Int {
+    val metric = DisplayMetrics()
+    val wm =
+        this.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    wm.defaultDisplay.getMetrics(metric)
+    return metric.heightPixels
+}
+
+fun Context.getScreenWidth(): Int {
+    val metric = DisplayMetrics()
+    val wm =
+        this.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    wm.defaultDisplay.getMetrics(metric)
+    return metric.widthPixels
 }

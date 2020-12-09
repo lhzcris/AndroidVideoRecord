@@ -45,5 +45,4 @@ dependencies {
 
 
 }
-
-apply from: UPLOAD_SCRIPT_URL
+//apply from: UPLOAD_SCRIPT_URL
