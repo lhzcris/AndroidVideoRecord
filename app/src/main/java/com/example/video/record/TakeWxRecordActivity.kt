@@ -28,6 +28,7 @@ class TakeWxRecordActivity : FullScreenBaseActivity() {
         super.onCreate(savedInstanceState)
 
         VideoRecordPicker.getInstance().recordBuilder?.apply {
+            maxDuration = 15 * 1000
             setOptionSize(OptionSize.sizeFull)
         }
 

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.smart.android.vrecord.listener.CaptureListener;
+import com.smart.android.vrecord.listener.ClickListener;
 import com.smart.android.vrecord.listener.ReturnListener;
 import com.smart.android.vrecord.listener.TypeListener;
 
