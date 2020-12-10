@@ -10,7 +10,7 @@ public interface CameraVideo {
 
     void switchCameraFacing();
 
-    void setAutoFitTextureView(AutoFitTextureView textureView);
+   public void setAutoFitTextureView(AutoFitTextureView textureView);
 
     void onPause();
 

@@ -12,7 +12,7 @@ import android.graphics.Bitmap;
  */
 public interface JCameraListener {
 
-    void captureSuccess(Bitmap bitmap);
+    void captureSuccess(String url);
 
     void recordSuccess(String url, Bitmap firstFrame);
 

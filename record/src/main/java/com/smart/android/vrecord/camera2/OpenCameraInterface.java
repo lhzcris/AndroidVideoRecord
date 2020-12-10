@@ -62,6 +62,13 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
 
     private boolean isPreViewReady;
 
+    private int cameraId;
+
+
+    public int getCameraId() {
+        return cameraId;
+    }
+
     OpenCameraInterface(Activity context) {
         mContext = context;
     }
@@ -69,6 +76,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     @SuppressLint("MissingPermission")
     void openCamera(int cameraId, ImageReaderManager imageReaderManager) {
 
+        this.cameraId = cameraId;
         CameraManager cameraManager = (CameraManager) mContext.getApplicationContext()
                 .getSystemService(Context.CAMERA_SERVICE);
 
@@ -279,9 +287,11 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
      * Stops the background thread and its {@link Handler}.
      */
     public void stopBackgroundThread() {
-        mBackgroundThread.quitSafely();
         try {
-            mBackgroundThread.join();
+            if (mBackgroundThread != null) {
+                mBackgroundThread.quitSafely();
+                mBackgroundThread.join();
+            }
             mBackgroundThread = null;
             mBackgroundHandler = null;
         } catch (InterruptedException e) {

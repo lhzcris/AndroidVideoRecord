@@ -14,9 +14,9 @@ import android.view.View;
 
 
 import com.smart.android.utils.Logger;
+import com.smart.android.vrecord.VideoRecordPicker;
 import com.smart.android.vrecord.listener.CaptureListener;
 import com.smart.android.vrecord.utils.CheckPermission;
-
 
 
 /**
@@ -77,7 +77,6 @@ public class CaptureButton extends View {
     public static final int BUTTON_STATE_BOTH = 0x103;              //两者都可以
 
 
-
     public CaptureButton(Context context) {
         super(context);
     }
@@ -103,7 +102,13 @@ public class CaptureButton extends View {
         state = STATE_IDLE;                //初始化为空闲状态
         button_state = BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
         Logger.i("CaptureButtom start");
-        duration = 10 * 1000;              //默认最长录制时间为10s
+
+        long recordTime = VideoRecordPicker.getInstance().getMaxDuration();
+        if (recordTime > 0) {
+            duration = (int) recordTime;
+        } else {
+            duration = 15 * 1000;              //默认最长录制时间为15s
+        }
         Logger.i("CaptureButtom end");
         min_duration = 1500;              //默认最短录制时间为1.5s
 

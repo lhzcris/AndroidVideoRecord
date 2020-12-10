@@ -41,5 +41,6 @@ dependencies {
 
     implementation 'com.smart.android:utils:1.0.8'
 
+    implementation 'com.smart.android:image:0.2.0'
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
 }

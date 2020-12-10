@@ -22,6 +22,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
 import com.smart.android.utils.Logger;
+import com.smart.android.vrecord.camera2.CameraFacing;
 import com.smart.android.vrecord.camera2.listener.OnCameraResultListener;
 import com.smart.android.vrecord.camera2.OpenCameraInterface;
 
@@ -38,7 +39,22 @@ public class ImageReaderManager {
 
     private static final SparseIntArray ORIENTATION = new SparseIntArray();
 
-    static {
+    //    static {
+//        ORIENTATION.append(Surface.ROTATION_0, 90);
+//        ORIENTATION.append(Surface.ROTATION_90, 0);
+//        ORIENTATION.append(Surface.ROTATION_180, 270);
+//        ORIENTATION.append(Surface.ROTATION_270, 180);
+//    }
+    private void front() {
+        //前置时，照片竖直显示
+        ORIENTATION.append(Surface.ROTATION_0, 270);
+        ORIENTATION.append(Surface.ROTATION_90, 0);
+        ORIENTATION.append(Surface.ROTATION_180, 90);
+        ORIENTATION.append(Surface.ROTATION_270, 180);
+    }
+
+    private void rear() {
+        //后置时，照片竖直显示
         ORIENTATION.append(Surface.ROTATION_0, 90);
         ORIENTATION.append(Surface.ROTATION_90, 0);
         ORIENTATION.append(Surface.ROTATION_180, 270);
@@ -69,6 +85,8 @@ public class ImageReaderManager {
     private String mOutputPath;
 
     private Handler UIhandler = new Handler(Looper.getMainLooper());
+
+    private CameraFacing cameraFacing = CameraFacing.BACK;
 
     public void setupImageReader(Size mPreviewSize) {
 
@@ -107,6 +125,11 @@ public class ImageReaderManager {
 
 
     public void takePicture(OpenCameraInterface openCameraInterface) {
+        if (openCameraInterface.getCameraId() == CameraFacing.FRONT.ordinal()) {
+            cameraFacing = CameraFacing.FRONT;
+        } else {
+            cameraFacing = CameraFacing.BACK;
+        }
         mCaptureSession = openCameraInterface.getmPreviewSession();
         mCameraDevice = openCameraInterface.getCameraDevice();
         mBackgroundHandler = openCameraInterface.getBackgroundHandler();
@@ -127,6 +150,11 @@ public class ImageReaderManager {
             //使用相同的AE和AF模式作为预览。
             mCaptureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
 
+            if (cameraFacing == CameraFacing.BACK) {
+                rear();
+            } else {
+                front();
+            }
             //设置拍照方向
             mCaptureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATION.get(mSensorOrientation));
 
