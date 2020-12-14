@@ -194,6 +194,7 @@ class JCameraView @JvmOverloads constructor(
             }
 
             override fun recordError() {
+                videoUrl = ""
                 if (errorLisenter != null) {
                     errorLisenter!!.AudioPermissionError()
                 }
@@ -439,9 +440,11 @@ class JCameraView @JvmOverloads constructor(
         when (type) {
             TYPE_VIDEO -> {
                 stopVideo()
+                videoUrl = ""
                 mVideoView?.visibility = View.INVISIBLE
             }
             TYPE_PICTURE -> {
+                picUrl = ""
                 mPhoto?.visibility = View.INVISIBLE
             }
             TYPE_SHORT -> {
