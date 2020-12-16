@@ -146,8 +146,17 @@ public class CaptureButton extends View {
     }
 
 
+    private boolean canClick = true;
+
+    public void setCanClick(boolean canClick) {
+        this.canClick = canClick;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        if (!canClick) return false;
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Logger.i("state = " + state);

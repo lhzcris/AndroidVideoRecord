@@ -23,6 +23,7 @@ import com.smart.android.vrecord.camera2.AutoFitTextureView
 import com.smart.android.vrecord.camera2.CameraVideo
 import com.smart.android.vrecord.camera2.CameraVideoManager
 import com.smart.android.vrecord.camera2.listener.OnCameraResultListener
+import com.smart.android.vrecord.camera2.listener.OnIsPreViewReadyListener
 import com.smart.android.vrecord.listener.*
 import com.smart.android.vrecord.ui.PreViewOnChanagerListener
 import com.smart.android.vrecord.widget.CaptureLayout
@@ -241,6 +242,11 @@ class JCameraView @JvmOverloads constructor(
         mCameraVideo = CameraVideoManager(context)
         mCameraVideo?.apply {
             setAutoFitTextureView(mAutoTextView)
+            setOnIsPreViewReadyListener(object : OnIsPreViewReadyListener {
+                override fun isPreViewReady(ready: Boolean) {
+                    mCaptureLayout?.setTakeClickable(ready)
+                }
+            })
             setOnCameraResultListener(object : OnCameraResultListener {
                 override fun onVideoRecorded(filePath: String) {
                     /**@link recordEnd() */
@@ -287,6 +293,7 @@ class JCameraView @JvmOverloads constructor(
             picUrl = getPicFilePath(mContext)
             mCameraVideo?.takePicture(picUrl)
         }
+
     }
 
 

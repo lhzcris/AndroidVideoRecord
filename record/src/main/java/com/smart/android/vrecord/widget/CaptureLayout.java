@@ -14,11 +14,15 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.smart.android.utils.ToastUtils;
 import com.smart.android.vrecord.listener.CaptureListener;
 import com.smart.android.vrecord.listener.ClickListener;
 import com.smart.android.vrecord.listener.ReturnListener;
 import com.smart.android.vrecord.listener.TypeListener;
+
+import java.util.logging.Logger;
 
 
 /**
@@ -65,6 +69,10 @@ public class CaptureLayout extends FrameLayout {
     private int iconRight = 0;
 
     private boolean isFirst = true;
+
+    public void setTakeClickable(boolean enabled) {
+        btn_capture.setCanClick(enabled);
+    }
 
     public CaptureLayout(Context context) {
         this(context, null);
@@ -144,6 +152,7 @@ public class CaptureLayout extends FrameLayout {
         LayoutParams btn_capture_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         btn_capture_param.gravity = Gravity.CENTER;
         btn_capture.setLayoutParams(btn_capture_param);
+        btn_capture.setCanClick(false);
         btn_capture.setCaptureLisenter(new CaptureListener() {
             @Override
             public void takePictures() {
