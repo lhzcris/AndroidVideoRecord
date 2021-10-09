@@ -1,6 +1,7 @@
 package com.smart.android.vrecord.camera2;
 
 import com.smart.android.vrecord.camera2.listener.OnCameraResultListener;
+import com.smart.android.vrecord.camera2.listener.OnIsPreViewReadyListener;
 
 /**
  * Created by Hyu on 2019-08-17.
@@ -10,13 +11,14 @@ public interface CameraVideo {
 
     void switchCameraFacing();
 
-    void setAutoFitTextureView(AutoFitTextureView textureView);
+    public void setAutoFitTextureView(AutoFitTextureView textureView);
 
     void onPause();
 
     void onResume();
 
     void startPreview();
+
 
     void startRecordingVideo(String videoPath);
 
@@ -36,6 +38,9 @@ public interface CameraVideo {
 
     void setOnProgressChangeListener(OnProgressChangeListener onProgressChangeListener);
 
+
+    void setOnIsPreViewReadyListener(OnIsPreViewReadyListener listener);
+
     interface OnProgressChangeListener {
         void onProgressChanged(int duration);
     }
@@ -43,4 +48,5 @@ public interface CameraVideo {
     interface OnRecordFinishListener {
         void onRecordFinished();
     }
+
 }

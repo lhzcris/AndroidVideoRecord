@@ -13,6 +13,7 @@ import com.smart.android.utils.Logger
 import com.smart.android.vrecord.camera2.CameraVideo.OnProgressChangeListener
 import com.smart.android.vrecord.camera2.image.ImageReaderManager
 import com.smart.android.vrecord.camera2.listener.OnCameraResultListener
+import com.smart.android.vrecord.camera2.listener.OnIsPreViewReadyListener
 import com.smart.android.vrecord.camera2.video.VideoRecorderManager
 
 
@@ -30,6 +31,7 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
     private var mImageReaderManager: ImageReaderManager? = null
     private var mOnProgressChangeListener: OnProgressChangeListener? = null
     private var onCameraResultListener: OnCameraResultListener? = null
+    private var onIsPreViewReadyListener: OnIsPreViewReadyListener? = null
     private var mCameraFacing = CameraFacing.BACK
     private var mHandler: Handler? = null
     private var mOrientation = 0
@@ -39,6 +41,11 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
         mContext = context
         mAlbumOrientationEventListener =
             AlbumOrientationEventListener(context, SensorManager.SENSOR_DELAY_NORMAL)
+        mOpenCameraInterface.setPreViewReadyListener(object : OnIsPreViewReadyListener {
+            override fun isPreViewReady(ready: Boolean) {
+                onIsPreViewReadyListener?.isPreViewReady(ready)
+            }
+        })
     }
 
     private inner class AlbumOrientationEventListener : OrientationEventListener {
@@ -78,6 +85,11 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
 
     override fun setOnCameraResultListener(resultListener: OnCameraResultListener) {
         this.onCameraResultListener = resultListener
+    }
+
+
+    override fun setOnIsPreViewReadyListener(listener: OnIsPreViewReadyListener?) {
+        this.onIsPreViewReadyListener = listener
     }
 
     // ***************SurfaceTextureListener****************** //
@@ -156,6 +168,8 @@ class CameraVideoManager(private val mOpenCameraInterface: OpenCameraInterface) 
 //        mVideoRecorderManager!!.setRecordInfoListener { if (mOnRecordFinishListener != null) mOnRecordFinishListener!!.onRecordFinished() }
         if (mHandler != null) mHandler!!.sendEmptyMessage(START)
     }
+
+//    override fun isPreViewReady() = mOpenCameraInterface.isPreViewReady
 
     /**拍照*/
     override fun takePicture(outPath: String) {

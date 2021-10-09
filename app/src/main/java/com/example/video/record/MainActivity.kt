@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.MediaController
+import com.smart.android.image.ImageLoader
 import com.smart.android.utils.Logger
 import com.smart.android.vrecord.OptionSize
 import com.smart.android.vrecord.VideoRecordPicker
@@ -40,10 +41,15 @@ class MainActivity : AppCompatActivity() {
                 text.text = sbuilder.toString()
             }
 
-            video_view?.let {
-                video_view.stopPlayback()
-                video_view.setVideoPath(videoPath)
-                video_view.start()
+            if (file.name.endsWith("mp4")) {
+
+                video_view?.let {
+                    video_view.stopPlayback()
+                    video_view.setVideoPath(videoPath)
+                    video_view.start()
+                }
+            } else {
+                ImageLoader.load(this, file.absolutePath, image)
             }
 
         }
@@ -55,6 +61,8 @@ class MainActivity : AppCompatActivity() {
 
 
         addView("拍照扫描-自定义样式", TakePictureActivity::class.java)
+
+        addView("仿微信拍照", TakeWxRecordActivity::class.java)
     }
 
     fun addView(name: String, clazz: Class<*>) {

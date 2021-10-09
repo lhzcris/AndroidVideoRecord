@@ -26,16 +26,19 @@ import android.media.ImageReader;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.core.app.ActivityCompat;
 
 import com.smart.android.utils.DisplayUtil;
 import com.smart.android.utils.Logger;
 import com.smart.android.vrecord.camera2.image.ImageReaderManager;
+import com.smart.android.vrecord.camera2.listener.OnIsPreViewReadyListener;
 import com.smart.android.vrecord.utils.SystemUtil;
 
 import java.util.Arrays;
@@ -58,9 +61,22 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     private CameraCaptureSession mPreviewSession;
     private CaptureRequest.Builder mPreviewBuilder;
 
+    private OnIsPreViewReadyListener preViewReadyListener;
+
     private ImageReader imageReader;
 
     private boolean isPreViewReady;
+
+    private int cameraId;
+
+
+    public void setPreViewReadyListener(OnIsPreViewReadyListener preViewReadyListener) {
+        this.preViewReadyListener = preViewReadyListener;
+    }
+
+    public int getCameraId() {
+        return cameraId;
+    }
 
     OpenCameraInterface(Activity context) {
         mContext = context;
@@ -69,6 +85,7 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
     @SuppressLint("MissingPermission")
     void openCamera(int cameraId, ImageReaderManager imageReaderManager) {
 
+        this.cameraId = cameraId;
         CameraManager cameraManager = (CameraManager) mContext.getApplicationContext()
                 .getSystemService(Context.CAMERA_SERVICE);
 
@@ -192,7 +209,18 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
                 @Override
                 public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
                     super.onCaptureFailed(session, request, failure);
-                    isPreViewReady = false;
+                    if (isPreViewReady) {
+                        isPreViewReady = false;
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (preViewReadyListener != null) {
+                                    preViewReadyListener.isPreViewReady(isPreViewReady);
+                                }
+                            }
+                        });
+                    }
+
                 }
 
                 @Override
@@ -222,7 +250,17 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
 //                    Log.e("afState", "afState=" + afState);
         if (afState != null && afState == CaptureResult.CONTROL_AF_STATE_PASSIVE_FOCUSED) {
 //                        Logger.e("update,onCaptureProgressed=" + afState);
-            isPreViewReady = true;
+            if (!isPreViewReady) {
+                isPreViewReady = true;
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (preViewReadyListener != null) {
+                            preViewReadyListener.isPreViewReady(isPreViewReady);
+                        }
+                    }
+                });
+            }
         }
 
     }
@@ -279,9 +317,11 @@ public class OpenCameraInterface extends CameraDevice.StateCallback {
      * Stops the background thread and its {@link Handler}.
      */
     public void stopBackgroundThread() {
-        mBackgroundThread.quitSafely();
         try {
-            mBackgroundThread.join();
+            if (mBackgroundThread != null) {
+                mBackgroundThread.quitSafely();
+                mBackgroundThread.join();
+            }
             mBackgroundThread = null;
             mBackgroundHandler = null;
         } catch (InterruptedException e) {
